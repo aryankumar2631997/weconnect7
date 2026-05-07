@@ -9,8 +9,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-// Serve frontend files from the parent directory (where index.html is)
-app.use(express.static('../'));
+// Serve frontend files from the current directory (where index.html is)
+// If your index.html is one level up, change to '../' – but Railway expects './'
+app.use(express.static('./'));
 
 // Google Auth
 const auth = new google.auth.GoogleAuth({
@@ -120,7 +121,7 @@ app.post('/api/save-booking', async (req, res) => {
   }
 });
 
-// Get bookings endpoint
+// Get bookings for a specific category
 app.get('/api/get-bookings/:category', async (req, res) => {
   try {
     const category = req.params.category;
@@ -142,6 +143,37 @@ app.get('/api/get-bookings/:category', async (req, res) => {
     res.json(data);
   } catch (error) {
     res.json([]);
+  }
+});
+
+// *** NEW ENDPOINT: Get all bookings from all sheets ***
+app.get('/api/get-all-bookings', async (req, res) => {
+  try {
+    const allBookings = [];
+    for (const [category, sheetName] of Object.entries(SHEET_NAMES)) {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: SHEET_ID,
+        range: `${sheetName}!A:Z`,
+      });
+      const rows = response.data.values || [];
+      if (rows.length > 1) {
+        const headers = rows[0];
+        const dataRows = rows.slice(1);
+        dataRows.forEach(row => {
+          const obj = {};
+          headers.forEach((h, i) => { obj[h] = row[i] || ''; });
+          obj.category = category;
+          obj.sheet = sheetName;
+          allBookings.push(obj);
+        });
+      }
+    }
+    // Sort by timestamp descending (most recent first)
+    allBookings.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+    res.json(allBookings);
+  } catch (error) {
+    console.error('Error fetching all bookings:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
