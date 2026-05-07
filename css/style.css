@@ -2532,3 +2532,32 @@ body.dark-mode .gradient-text {
   background-clip: text;
   color: transparent;
 }
+
+/* Mobile improvements */
+@media (max-width: 768px) {
+  button, .btn, .book-btn, .btn-submit, .btn-confirm {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+  input, select, textarea {
+    font-size: 16px; /* prevents zoom on focus in iOS */
+    padding: 12px;
+  }
+  .container {
+    padding: 0 16px;
+  }
+  .services-grid, .providers-grid, .hotels-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-title {
+    font-size: 28px;
+  }
+  .navbar .logo-text {
+    font-size: 18px;
+  }
+  .nav-buttons .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
