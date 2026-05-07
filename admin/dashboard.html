@@ -322,35 +322,34 @@
   let allOrders = [];
   let currentFilter = 'all';
 
-  function loadData() {
-    fetch('/api/get-all-bookings')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch bookings');
-        return res.json();
-      })
-      .then(data => {
-        allOrders = Array.isArray(data) ? data : [];
-        allOrders.reverse();
-        updateStats();
-        renderTable();
-      })
-      .catch(err => {
-        console.error('Error loading bookings:', err);
-        allOrders = [];
-        updateStats();
-        renderTable();
-      });
+  async function loadData() {
+    const tbody = document.getElementById('ordersBody');
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Loading orders...</td></tr>';
+    try {
+      const response = await fetch('/api/get-all-bookings');
+      allOrders = await response.json();
+    } catch (err) {
+      console.error('Error loading bookings:', err);
+      allOrders = [];
+    }
+    updateStats();
+    renderTable();
+  }
+
+  function getStatus(order) {
+    // Google Sheets returns field names matching the header row (e.g. "Status")
+    return (order['Status'] || order.status || 'pending').toLowerCase();
   }
 
   function updateStats() {
     document.getElementById('totalOrders').innerText = allOrders.length;
-    document.getElementById('pendingOrders').innerText = allOrders.filter(o => o.status === 'pending').length;
-    document.getElementById('confirmedOrders').innerText = allOrders.filter(o => o.status === 'confirmed').length;
-    document.getElementById('completedOrders').innerText = allOrders.filter(o => o.status === 'completed').length;
+    document.getElementById('pendingOrders').innerText = allOrders.filter(o => getStatus(o) === 'pending').length;
+    document.getElementById('confirmedOrders').innerText = allOrders.filter(o => getStatus(o) === 'confirmed').length;
+    document.getElementById('completedOrders').innerText = allOrders.filter(o => getStatus(o) === 'completed').length;
   }
 
   function renderTable() {
-    let filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.status === currentFilter);
+    let filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => getStatus(o) === currentFilter);
     const tbody = document.getElementById('ordersBody');
     
     if (filtered.length === 0) {
@@ -358,60 +357,72 @@
       return;
     }
     
-    tbody.innerHTML = filtered.map(order => `
+    tbody.innerHTML = filtered.map(order => {
+      const id = order['ID'] || order.id || '';
+      const customerName = order['Customer Name'] || order['Parent Name'] || order.userName || '-';
+      const phone = order['Phone'] || order.userPhone || '-';
+      const service = order.category || order.sheet || order.serviceType || '-';
+      const timestamp = order['Timestamp'] || order.createdAt || '';
+      const status = getStatus(order);
+      const shortId = id.length > 12 ? id.substring(0, 12) + '...' : id;
+      const dateStr = timestamp ? new Date(timestamp).toLocaleDateString() : '-';
+      return `
       <tr>
-        <td><span class="order-id">${order.id.substring(0, 12)}...</span></td>
-        <td><strong>${order.userName || '-'}</strong></td>
-        <td>${order.userPhone || '-'}</td>
-        <td>${order.serviceType}</td>
-        <td>${new Date(order.createdAt).toLocaleDateString()}</td>
-        <td><span class="badge badge-${order.status}">${order.status}</span></td>
+        <td><span class="order-id">${shortId}</span></td>
+        <td><strong>${customerName}</strong></td>
+        <td>${phone}</td>
+        <td>${service}</td>
+        <td>${dateStr}</td>
+        <td><span class="badge badge-${status}">${status}</span></td>
         <td class="action-buttons">
-          ${order.status === 'pending' ? `<button class="action-btn confirm" onclick="updateStatus('${order.id}', 'confirmed')"><i class="fas fa-check"></i> Confirm</button>` : ''}
-          ${order.status === 'pending' ? `<button class="action-btn reject" onclick="updateStatus('${order.id}', 'rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
-          ${order.status === 'confirmed' ? `<button class="action-btn complete" onclick="updateStatus('${order.id}', 'completed')"><i class="fas fa-check-double"></i> Complete</button>` : ''}
-          <button class="action-btn whatsapp" onclick="sendWhatsApp('${order.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+          ${status === 'pending' ? `<button class="action-btn confirm" onclick="updateStatus('${id}', 'confirmed')"><i class="fas fa-check"></i> Confirm</button>` : ''}
+          ${status === 'pending' ? `<button class="action-btn reject" onclick="updateStatus('${id}', 'rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
+          ${status === 'confirmed' ? `<button class="action-btn complete" onclick="updateStatus('${id}', 'completed')"><i class="fas fa-check-double"></i> Complete</button>` : ''}
+          <button class="action-btn whatsapp" onclick="sendWhatsApp('${id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
         </td>
-      </tr>
-    `).join('');
+      </tr>`;
+    }).join('');
   }
 
-  function updateStatus(orderId, newStatus) {
-    fetch('/api/update-booking-status', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: orderId, status: newStatus })
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to update status');
-        return res.json();
-      })
-      .then(() => loadData())
-      .catch(err => {
-        console.error('Error updating status:', err);
-        // Optimistically update the local state so the UI reflects the change
-        const order = allOrders.find(o => o.id === orderId);
-        if (order) {
-          order.status = newStatus;
-          updateStats();
-          renderTable();
-        }
+  async function updateStatus(orderId, newStatus) {
+    try {
+      const response = await fetch('/api/update-booking-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: orderId, status: newStatus }),
       });
+      const result = await response.json();
+      if (!result.success) {
+        alert('Failed to update status: ' + result.message);
+        return;
+      }
+      // Also update local cache so the UI reflects the change immediately
+      const index = allOrders.findIndex(o => (o['ID'] || o.id) === orderId);
+      if (index !== -1) allOrders[index]['Status'] = newStatus;
+      updateStats();
+      renderTable();
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Network error while updating status. Please try again.');
+    }
   }
 
   function sendWhatsApp(orderId) {
-    const order = allOrders.find(o => o.id === orderId);
+    const order = allOrders.find(o => (o['ID'] || o.id) === orderId);
     if (!order) return;
     
-    const orderDetails = order.formData ? JSON.stringify(order.formData, null, 2) : 'No additional details';
+    const customerName = order['Customer Name'] || order['Parent Name'] || order.userName || 'N/A';
+    const phone = order['Phone'] || order.userPhone || 'N/A';
+    const service = order.category || order.sheet || order.serviceType || 'N/A';
+    const timestamp = order['Timestamp'] || order.createdAt || '';
+    const dateStr = timestamp ? new Date(timestamp).toLocaleString() : 'N/A';
     
     const message = `*🆕 NEW BOOKING ALERT!* 🎉\n\n` +
-      `*📋 Order ID:* ${order.id}\n` +
-      `*👤 Customer:* ${order.userName || 'N/A'}\n` +
-      `*📞 Phone:* ${order.userPhone || 'N/A'}\n` +
-      `*🛠️ Service:* ${order.serviceType}\n` +
-      `*📅 Date:* ${new Date(order.createdAt).toLocaleString()}\n` +
-      `*📝 Details:* ${orderDetails}\n\n` +
+      `*📋 Order ID:* ${orderId}\n` +
+      `*👤 Customer:* ${customerName}\n` +
+      `*📞 Phone:* ${phone}\n` +
+      `*🛠️ Service:* ${service}\n` +
+      `*📅 Date:* ${dateStr}\n\n` +
       `_Click to respond to this customer_`;
     
     const adminNumber = '918102284634';

@@ -40,14 +40,14 @@ const SHEET_NAMES = {
 
 // Headers for each sheet
 const SHEET_HEADERS = {
-  Doctor_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Doctor Name', 'Date', 'Time', 'Issue'],
-  Hotel_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Hotel Name', 'Room Type', 'Check-in', 'Check-out', 'Guests'],
-  Cinema_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Cinema', 'Movie', 'Showtime', 'Seats', 'Amount'],
-  Transport_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Vehicle', 'Pickup', 'Drop', 'Date', 'Time'],
-  Wedding_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Service Type', 'Event Date', 'Guests', 'Budget', 'Requirements'],
-  Local_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Service Type', 'Address', 'Date', 'Time', 'Description'],
-  School_Bookings: ['ID', 'Timestamp', 'Parent Name', 'Phone', 'Student Name', 'Class', 'Subject', 'Timings', 'Address'],
-  Delivery_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Store Name', 'Items', 'Delivery Address', 'Total Amount']
+  Doctor_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Doctor Name', 'Date', 'Time', 'Issue', 'Status'],
+  Hotel_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Hotel Name', 'Room Type', 'Check-in', 'Check-out', 'Guests', 'Status'],
+  Cinema_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Cinema', 'Movie', 'Showtime', 'Seats', 'Amount', 'Status'],
+  Transport_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Vehicle', 'Pickup', 'Drop', 'Date', 'Time', 'Status'],
+  Wedding_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Service Type', 'Event Date', 'Guests', 'Budget', 'Requirements', 'Status'],
+  Local_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Service Type', 'Address', 'Date', 'Time', 'Description', 'Status'],
+  School_Bookings: ['ID', 'Timestamp', 'Parent Name', 'Phone', 'Student Name', 'Class', 'Subject', 'Timings', 'Address', 'Status'],
+  Delivery_Bookings: ['ID', 'Timestamp', 'Customer Name', 'Phone', 'Store Name', 'Items', 'Delivery Address', 'Total Amount', 'Status']
 };
 
 // Initialize sheets
@@ -102,6 +102,9 @@ app.post('/api/save-booking', async (req, res) => {
     } else {
       row.push(JSON.stringify(formData));
     }
+
+    // Append initial status as 'pending'
+    row.push('pending');
     
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
@@ -176,6 +179,85 @@ app.get('/api/get-all-bookings', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// *** NEW ENDPOINT: Update booking status by ID across all sheets ***
+app.post('/api/update-booking-status', async (req, res) => {
+  try {
+    const { id, status } = req.body;
+
+    if (!id || !status) {
+      return res.status(400).json({ success: false, message: 'Missing required fields: id and status' });
+    }
+
+    const validStatuses = ['pending', 'confirmed', 'completed', 'rejected'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
+    }
+
+    for (const [category, sheetName] of Object.entries(SHEET_NAMES)) {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: SHEET_ID,
+        range: `${sheetName}!A:Z`,
+      });
+
+      const rows = response.data.values || [];
+      if (rows.length < 2) continue;
+
+      const headers = rows[0];
+      let statusColIndex = headers.indexOf('Status');
+
+      // If the sheet doesn't have a Status column yet, add it to the header row
+      if (statusColIndex === -1) {
+        statusColIndex = headers.length;
+        const headerRange = `${sheetName}!${columnLetter(statusColIndex + 1)}1`;
+        await sheets.spreadsheets.values.update({
+          spreadsheetId: SHEET_ID,
+          range: headerRange,
+          valueInputOption: 'RAW',
+          requestBody: { values: [['Status']] },
+        });
+      }
+
+      // Find the row whose ID (column A) matches the requested id
+      const idColIndex = headers.indexOf('ID');
+      const rowIndex = rows.findIndex((row, i) => i > 0 && row[idColIndex === -1 ? 0 : idColIndex] === id);
+
+      if (rowIndex === -1) continue;
+
+      // rowIndex is 0-based in the array; row 1 is the header, so sheet row = rowIndex + 1
+      const sheetRowNumber = rowIndex + 1;
+      const statusCellRange = `${sheetName}!${columnLetter(statusColIndex + 1)}${sheetRowNumber}`;
+
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SHEET_ID,
+        range: statusCellRange,
+        valueInputOption: 'RAW',
+        requestBody: { values: [[status]] },
+      });
+
+      console.log(`✅ Status updated: booking ${id} → ${status} (${sheetName}, row ${sheetRowNumber})`);
+      return res.json({ success: true, message: `Booking status updated to '${status}'`, id, status });
+    }
+
+    // Booking ID not found in any sheet
+    return res.status(404).json({ success: false, message: `Booking with ID '${id}' not found` });
+
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Helper: convert a 1-based column number to a spreadsheet letter (e.g. 1 → A, 27 → AA)
+function columnLetter(n) {
+  let letter = '';
+  while (n > 0) {
+    const remainder = (n - 1) % 26;
+    letter = String.fromCharCode(65 + remainder) + letter;
+    n = Math.floor((n - 1) / 26);
+  }
+  return letter;
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
