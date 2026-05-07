@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Transport | WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .transport-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .transport-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 32px; background: var(--bg-secondary); padding: 6px; border-radius: var(--radius-xl); flex-wrap: wrap; }
+    .tab-btn { padding: 12px 28px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: var(--text-light); cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s; }
+    .tab-btn.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow-sm); }
+    
+    .vehicles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .vehicle-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .vehicle-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .vehicle-image { height: 160px; background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); display: flex; align-items: center; justify-content: center; font-size: 64px; border-bottom: 1px solid var(--border); }
+    .vehicle-info { padding: 20px; }
+    .vehicle-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .vehicle-type { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .vehicle-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .stars { color: #F59E0B; font-size: 12px; }
+    .vehicle-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .feature-tag { padding: 4px 10px; background: var(--bg-secondary); border-radius: 20px; font-size: 11px; }
+    .vehicle-price { font-size: 16px; font-weight: 700; color: var(--blue); margin-top: 8px; }
+    .vehicle-footer { padding: 16px 20px; background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .book-btn { padding: 8px 24px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .book-btn:hover { background: #333; transform: translateY(-2px); }
+    .view-details { font-size: 12px; color: var(--text-muted); text-decoration: none; }
+    .view-details:hover { color: var(--text); }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .tabs { justify-content: center; }
+      .vehicles-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="transport-container">
+  <div class="transport-wrapper">
+    <div class="page-header">
+      <h1>🚗 Transport Services</h1>
+      <p>Book cars, bikes, and Toto e-rickshaws for local and outstation travel in Lakhisarai</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">30+</div><div class="stat-label-sm">Vehicles</div></div>
+      <div class="stat-item"><div class="stat-number-lg">20+</div><div class="stat-label-sm">Drivers</div></div>
+      <div class="stat-item"><div class="stat-number-lg">₹10/km</div><div class="stat-label-sm">Starting Price</div></div>
+      <div class="stat-item"><div class="stat-number-lg">24/7</div><div class="stat-label-sm">Service</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search by vehicle name or driver..."></div>
+        <select id="priceFilter" class="filter-select"><option value="all">All Prices</option><option value="budget">Budget (Under ₹500)</option><option value="mid">Mid (₹500-1000)</option><option value="premium">Premium (₹1000+)</option></select>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="car">🚗 Cars</button>
+      <button class="tab-btn" data-tab="bike">🏍️ Bikes</button>
+      <button class="tab-btn" data-tab="toto">🛺 Toto / E-Rickshaw</button>
+    </div>
+    
+    <div id="vehiclesList" class="vehicles-grid"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  // Complete Transport Data
+  const vehiclesData = {
+    car: [
+      { id: 1, name: "Sedan (4 Seater)", type: "Car", rating: 4.7, reviews: 234, price: "₹12/km", priceValue: 12, features: ["AC", "4 Seats", "Luggage Space", "GPS"], image: "🚗", driver: "Rajesh", driverPhone: "+919876543201" },
+      { id: 2, name: "SUV (7 Seater)", type: "Car", rating: 4.8, reviews: 189, price: "₹15/km", priceValue: 15, features: ["AC", "7 Seats", "Big Luggage Space", "GPS"], image: "🚙", driver: "Manoj", driverPhone: "+919876543202" },
+      { id: 3, name: "Outstation Taxi", type: "Car", rating: 4.6, reviews: 156, price: "Call for quote", priceValue: 0, features: ["AC", "Round Trip", "Driver Included", "24/7 Service"], image: "🚐", driver: "Suresh", driverPhone: "+919876543203" },
+      { id: 4, name: "Luxury Sedan", type: "Car", rating: 4.9, reviews: 98, price: "₹20/km", priceValue: 20, features: ["AC", "Premium Interior", "4 Seats", "Water Bottles"], image: "🚗", driver: "Vikash", driverPhone: "+919876543204" }
+    ],
+    bike: [
+      { id: 5, name: "Bike Taxi", type: "Bike", rating: 4.5, reviews: 345, price: "₹10/km", priceValue: 10, features: ["Fast", "1 Passenger", "Best for Short Trips", "Helmet Included"], image: "🏍️", driver: "Rahul", driverPhone: "+919876543205" },
+      { id: 6, name: "Premium Bike", type: "Bike", rating: 4.7, reviews: 234, price: "₹15/km", priceValue: 15, features: ["Premium Bike", "1 Passenger", "Comfortable", "Helmet Included"], image: "🏍️", driver: "Amit", driverPhone: "+919876543206" }
+    ],
+    toto: [
+      { id: 7, name: "Toto / E-Rickshaw", type: "Toto", rating: 4.4, reviews: 567, price: "₹20 for 2km + ₹8/km", priceValue: 8, features: ["Budget Friendly", "3-4 Passengers", "Short City Trips", "Eco-friendly"], image: "🛺", driver: "Sunil", driverPhone: "+919876543207" },
+      { id: 8, name: "Shared Toto", type: "Toto", rating: 4.2, reviews: 432, price: "₹10 per seat", priceValue: 10, features: ["Shared Ride", "Cheapest Option", "Fixed Routes"], image: "🛺", driver: "Ramesh", driverPhone: "+919876543208" }
+    ]
+  };
+
+  let currentTab = 'car';
+  let searchTerm = '';
+  let priceFilter = 'all';
+
+  function getStars(rating) { return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : ''); }
+
+  function renderVehicles() {
+    const container = document.getElementById('vehiclesList');
+    let items = vehiclesData[currentTab];
+    
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm) || item.driver.toLowerCase().includes(searchTerm));
+    
+    if (priceFilter === 'budget') items = items.filter(item => item.priceValue > 0 && item.priceValue < 12);
+    else if (priceFilter === 'mid') items = items.filter(item => item.priceValue >= 12 && item.priceValue < 18);
+    else if (priceFilter === 'premium') items = items.filter(item => item.priceValue >= 18);
+    
+    if (items.length === 0) { container.innerHTML = '<div style="text-align:center;padding:60px;"><i class="fas fa-car-side" style="font-size:48px;opacity:0.5;"></i><h3>No vehicles found</h3></div>'; return; }
+    
+    container.innerHTML = items.map(vehicle => `
+      <div class="vehicle-card">
+        <div class="vehicle-image">${vehicle.image}</div>
+        <div class="vehicle-info">
+          <div class="vehicle-name">${vehicle.name}</div>
+          <div class="vehicle-type"><i class="fas fa-user"></i> Driver: ${vehicle.driver}</div>
+          <div class="vehicle-rating"><span class="stars">${getStars(vehicle.rating)}</span><span>(${vehicle.reviews} reviews)</span></div>
+          <div class="vehicle-features">${vehicle.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}</div>
+          <div class="vehicle-price">💰 ${vehicle.price}</div>
+        </div>
+        <div class="vehicle-footer">
+          <a href="/transport/vehicle-details.html?id=${vehicle.id}&type=${currentTab}" class="view-details"><i class="fas fa-info-circle"></i> Details</a>
+          <button class="book-btn" onclick="bookVehicle(${vehicle.id}, '${currentTab}', '${vehicle.name}', '${vehicle.price}', ${vehicle.priceValue})">Book Now →</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function bookVehicle(id, type, name, price, priceValue) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'transport', vehicleType: type, vehicleId: id, vehicleName: name, price: price, priceValue: priceValue }));
+    window.location.href = `/transport/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&price=${price}`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      renderVehicles();
+    });
+  });
+  
+  document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderVehicles(); });
+  document.getElementById('priceFilter').addEventListener('change', (e) => { priceFilter = e.target.value; renderVehicles(); });
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block';
+      if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none';
+      if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookVehicle = bookVehicle;
+  updateUI();
+  renderVehicles();
+</script>
+</body>
+</html>

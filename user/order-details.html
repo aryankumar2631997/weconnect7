@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Order Details | WeConnect - Lakhisarai's Super App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .order-detail-container {
+      min-height: 100vh;
+      padding: 100px 20px 60px;
+      background: var(--bg-secondary);
+    }
+    .order-detail-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-light);
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: var(--text);
+    }
+    .order-card {
+      background: var(--bg);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .order-header {
+      padding: 24px;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .order-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .order-id {
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .order-date {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .order-service-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--bg-secondary);
+      border-radius: 30px;
+      font-size: 13px;
+    }
+    .order-status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .status-pending { background: rgba(245,158,11,0.15); color: var(--pending); }
+    .status-confirmed { background: rgba(16,185,129,0.15); color: var(--confirmed); }
+    .status-completed { background: rgba(59,130,246,0.15); color: var(--completed); }
+    .status-rejected { background: rgba(239,68,68,0.15); color: var(--rejected); }
+    /* Status Message */
+    .status-message-section {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .status-message {
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    /* Order Info */
+    .order-info-section {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .info-item {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+    }
+    .info-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-word;
+    }
+    /* Timeline */
+    .timeline-section {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+    .timeline-item {
+      position: relative;
+      padding-bottom: 24px;
+    }
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    .timeline-icon {
+      position: absolute;
+      left: -30px;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      z-index: 1;
+    }
+    .timeline-item.done .timeline-icon {
+      background: var(--confirmed);
+      border-color: var(--confirmed);
+      color: white;
+    }
+    .timeline-item.active .timeline-icon {
+      background: var(--text);
+      border-color: var(--text);
+      color: white;
+    }
+    .timeline-item.rejected .timeline-icon {
+      background: var(--rejected);
+      border-color: var(--rejected);
+      color: white;
+    }
+    .timeline-line {
+      position: absolute;
+      left: -16px;
+      top: 28px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item:last-child .timeline-line {
+      display: none;
+    }
+    .timeline-content {
+      padding-bottom: 8px;
+    }
+    .timeline-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .timeline-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .timeline-note {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 6px;
+      font-style: italic;
+    }
+    /* Form Data */
+    .form-data-section {
+      padding: 24px;
+    }
+    .form-data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .form-data-item {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+    }
+    .form-data-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .form-data-value {
+      font-size: 13px;
+      font-weight: 500;
+      word-break: break-word;
+    }
+    /* Actions */
+    .order-actions {
+      padding: 20px 24px;
+      background: var(--bg-secondary);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .btn-back {
+      padding: 10px 24px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-cancel {
+      padding: 10px 24px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--rejected);
+    }
+    .loading-state {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+    .error-state {
+      text-align: center;
+      padding: 60px;
+    }
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .form-data-grid {
+        grid-template-columns: 1fr;
+      }
+      .order-actions {
+        flex-direction: column;
+      }
+      .btn-back, .btn-cancel {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo">
+      <div class="logo-icon">🔗</div>
+      <div class="logo-text">We<span>Connect</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/index.html#services">Services</a></li>
+      <li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span>
+      <button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button>
+      <button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a>
+  <a href="/user/login.html" id="mobile-login">Login</a>
+  <a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a>
+</div>
+
+<div class="order-detail-container">
+  <div class="order-detail-wrapper">
+    <a href="/user/my-orders.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to My Orders
+    </a>
+    <div id="orderContent">
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+        <p>Loading order details...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">WeConnect</div>
+      <div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  let currentOrder = null;
+
+  function checkAuthAndLoad() {
+    const sessionData = sessionStorage.getItem('weconnect_current_user');
+    if (!sessionData) {
+      sessionStorage.setItem('weconnect_redirect_after_login', window.location.pathname);
+      window.location.href = '/user/login.html';
+      return;
+    }
+    
+    try {
+      const user = JSON.parse(sessionData);
+      updateAuthUI(user);
+      loadOrder();
+    } catch(e) {
+      window.location.href = '/user/login.html';
+    }
+  }
+
+  function updateAuthUI(user) {
+    document.getElementById('login-nav-btn').style.display = 'none';
+    document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+    document.getElementById('user-name').style.display = 'inline-block';
+    document.getElementById('user-name').textContent = user.name || user.phone || 'User';
+    document.getElementById('my-orders-link').style.display = 'inline-block';
+    document.getElementById('mobile-my-orders').style.display = 'block';
+    document.getElementById('mobile-login').style.display = 'none';
+    document.getElementById('mobile-logout').style.display = 'block';
+  }
+
+  function getStatusClass(status) {
+    const classes = {
+      pending: 'status-pending',
+      confirmed: 'status-confirmed',
+      completed: 'status-completed',
+      rejected: 'status-rejected'
+    };
+    return classes[status] || 'status-pending';
+  }
+
+  function getStatusMessage(status) {
+    const messages = {
+      pending: '⏳ Your order is placed. Waiting for merchant to confirm...',
+      confirmed: '✅ Your order has been confirmed by the merchant!',
+      completed: '🎉 Order Completed! Thank you for using WeConnect.',
+      rejected: '❌ Order could not be confirmed. Please try another option.'
+    };
+    return messages[status] || messages.pending;
+  }
+
+  function getServiceIcon(serviceType) {
+    const icons = {
+      'Healthcare': '🏥',
+      'Cinema': '🎬',
+      'Hotel': '🏨',
+      'Transport': '🚗',
+      'Wedding': '💍',
+      'Local Services': '🔧',
+      'School': '📚',
+      'Delivery': '📦'
+    };
+    return icons[serviceType] || '📋';
+  }
+
+  function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function formatDateOnly(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  function getTimelineStatusClass(itemStatus, orderStatus) {
+    if (orderStatus === 'rejected') {
+      if (itemStatus === 'pending') return 'done';
+      if (itemStatus === 'rejected') return 'rejected';
+      return '';
+    }
+    const statusOrder = ['pending', 'confirmed', 'completed'];
+    const currentIndex = statusOrder.indexOf(orderStatus);
+    const itemIndex = statusOrder.indexOf(itemStatus);
+    if (itemIndex < currentIndex) return 'done';
+    if (itemIndex === currentIndex) return 'active';
+    return '';
+  }
+
+  function loadOrder() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id');
+    
+    if (!orderId) {
+      document.getElementById('orderContent').innerHTML = `
+        <div class="error-state">
+          <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 16px; color: var(--rejected);"></i>
+          <h3>Order ID not found</h3>
+          <p>Please go back to My Orders and select an order.</p>
+          <a href="/user/my-orders.html" class="btn-back" style="margin-top: 20px;">← Back to Orders</a>
+        </div>
+      `;
+      return;
+    }
+    
+    const bookingsData = localStorage.getItem('weconnect_bookings');
+    if (!bookingsData) {
+      showNotFound(orderId);
+      return;
+    }
+    
+    try {
+      const bookings = JSON.parse(bookingsData);
+      currentOrder = bookings.find(b => b.id === orderId);
+      
+      if (!currentOrder) {
+        showNotFound(orderId);
+        return;
+      }
+      
+      renderOrderDetails();
+    } catch(e) {
+      showNotFound(orderId);
+    }
+  }
+
+  function showNotFound(orderId) {
+    document.getElementById('orderContent').innerHTML = `
+      <div class="error-state">
+        <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+        <h3>Order Not Found</h3>
+        <p>We couldn't find order #${orderId}</p>
+        <a href="/user/my-orders.html" class="btn-back" style="margin-top: 20px;">← Back to My Orders</a>
+      </div>
+    `;
+  }
+
+  function renderOrderDetails() {
+    const statusClass = getStatusClass(currentOrder.status);
+    const statusMessage = getStatusMessage(currentOrder.status);
+    const serviceIcon = getServiceIcon(currentOrder.serviceType);
+    
+    // Build form data display
+    let formDataHtml = '';
+    if (currentOrder.formData) {
+      const excludedKeys = ['fullname', 'phone', 'name'];
+      const entries = Object.entries(currentOrder.formData).filter(([key]) => !excludedKeys.includes(key));
+      
+      if (entries.length > 0) {
+        formDataHtml = `
+          <div class="form-data-section">
+            <div class="section-title">
+              <i class="fas fa-file-alt"></i> Booking Details
+            </div>
+            <div class="form-data-grid">
+              ${entries.map(([key, value]) => `
+                <div class="form-data-item">
+                  <div class="form-data-label">${key.replace(/_/g, ' ').toUpperCase()}</div>
+                  <div class="form-data-value">${value || '—'}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // Build timeline
+    const timelineSteps = [
+      { status: 'pending', label: 'Order Placed', description: 'Your order has been received' },
+      { status: 'confirmed', label: 'Confirmed', description: 'Merchant has accepted your order' },
+      { status: 'completed', label: 'Completed', description: 'Service has been delivered' }
+    ];
+    
+    let timelineHtml = '';
+    if (currentOrder.status === 'rejected') {
+      timelineHtml = `
+        <div class="timeline-item done">
+          <div class="timeline-icon"><i class="fas fa-check"></i></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Order Placed</div>
+            <div class="timeline-time">${formatDateTime(currentOrder.createdAt)}</div>
+          </div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-item rejected">
+          <div class="timeline-icon"><i class="fas fa-times"></i></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Order Rejected</div>
+            <div class="timeline-time">${currentOrder.updatedAt ? formatDateTime(currentOrder.updatedAt) : formatDateTime(currentOrder.createdAt)}</div>
+            <div class="timeline-note">Order could not be confirmed by the merchant</div>
+          </div>
+        </div>
+      `;
+    } else {
+      timelineHtml = timelineSteps.map((step, index) => {
+        let stepClass = '';
+        const statusOrder = ['pending', 'confirmed', 'completed'];
+        const currentIndex = statusOrder.indexOf(currentOrder.status);
+        
+        if (index < currentIndex) stepClass = 'done';
+        else if (index === currentIndex) stepClass = 'active';
+        
+        let stepTime = '';
+        if (stepClass === 'done' || stepClass === 'active') {
+          if (step.status === 'pending') stepTime = currentOrder.createdAt;
+          else if (step.status === 'confirmed' && currentOrder.statusHistory) {
+            const confirmedEntry = currentOrder.statusHistory.find(h => h.status === 'confirmed');
+            if (confirmedEntry) stepTime = confirmedEntry.timestamp;
+          } else if (step.status === 'completed' && currentOrder.statusHistory) {
+            const completedEntry = currentOrder.statusHistory.find(h => h.status === 'completed');
+            if (completedEntry) stepTime = completedEntry.timestamp;
+          }
+        }
+        
+        return `
+          <div class="timeline-item ${stepClass}">
+            <div class="timeline-icon">${stepClass === 'done' ? '<i class="fas fa-check"></i>' : index + 1}</div>
+            <div class="timeline-content">
+              <div class="timeline-title">${step.label}</div>
+              <div class="timeline-time">${stepTime ? formatDateTime(stepTime) : '—'}</div>
+              <div class="timeline-note">${step.description}</div>
+            </div>
+            ${index < timelineSteps.length - 1 ? '<div class="timeline-line"></div>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+    
+    const html = `
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-header-top">
+            <div>
+              <span class="order-id">#${currentOrder.id}</span>
+              <div class="order-date">Placed on ${formatDateTime(currentOrder.createdAt)}</div>
+            </div>
+            <span class="order-status-badge ${statusClass}">${currentOrder.status.toUpperCase()}</span>
+          </div>
+          <div class="order-service-badge">
+            <span>${serviceIcon}</span>
+            <span>${currentOrder.serviceType}</span>
+          </div>
+        </div>
+        
+        <div class="status-message-section">
+          <div class="status-message ${statusClass}">
+            ${statusMessage}
+          </div>
+        </div>
+        
+        <div class="order-info-section">
+          <div class="section-title">
+            <i class="fas fa-user"></i> Customer Information
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Full Name</div>
+              <div class="info-value">${currentOrder.userName || currentOrder.formData?.fullname || '—'}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Phone Number</div>
+              <div class="info-value">${currentOrder.userPhone || currentOrder.formData?.phone || '—'}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Service</div>
+              <div class="info-value">${currentOrder.serviceName || currentOrder.serviceType}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Booking ID</div>
+              <div class="info-value">${currentOrder.id}</div>
+            </div>
+          </div>
+        </div>
+        
+        ${formDataHtml}
+        
+        <div class="timeline-section">
+          <div class="section-title">
+            <i class="fas fa-history"></i> Order Timeline
+          </div>
+          <div class="timeline">
+            ${timelineHtml}
+          </div>
+        </div>
+        
+        <div class="order-actions">
+          <a href="/user/my-orders.html" class="btn-back">← Back to Orders</a>
+          ${currentOrder.status === 'pending' ? `<button class="btn-cancel" onclick="cancelOrder()">Cancel Order</button>` : ''}
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('orderContent').innerHTML = html;
+  }
+
+  function cancelOrder() {
+    if (!currentOrder) return;
+    if (confirm('Are you sure you want to cancel this order?')) {
+      const bookingsData = localStorage.getItem('weconnect_bookings');
+      if (bookingsData) {
+        const bookings = JSON.parse(bookingsData);
+        const index = bookings.findIndex(b => b.id === currentOrder.id);
+        if (index !== -1 && bookings[index].status === 'pending') {
+          bookings[index].status = 'rejected';
+          bookings[index].updatedAt = new Date().toISOString();
+          if (!bookings[index].statusHistory) bookings[index].statusHistory = [];
+          bookings[index].statusHistory.push({
+            status: 'rejected',
+            timestamp: new Date().toISOString(),
+            note: 'Cancelled by customer'
+          });
+          localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+          WeConnect.showToast('Order cancelled successfully', 'success');
+          setTimeout(() => {
+            window.location.href = '/user/my-orders.html';
+          }, 1500);
+        }
+      }
+    }
+  }
+
+  window.cancelOrder = cancelOrder;
+  window.logout = function() {
+    sessionStorage.removeItem('weconnect_current_user');
+    window.location.href = '/index.html';
+  };
+
+  // Initialize
+  checkAuthAndLoad();
+</script>
+</body>
+</html>

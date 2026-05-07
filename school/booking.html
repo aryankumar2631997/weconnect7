@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>School Enquiry | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .booking-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .booking-wrapper { max-width: 650px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .booking-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .service-header { padding: 24px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, var(--bg-secondary), var(--bg)); }
+    .service-icon { width: 60px; height: 60px; background: var(--bg); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
+    .service-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .service-meta { font-size: 13px; color: var(--text-muted); }
+    .booking-summary { padding: 20px 24px; background: var(--bg-secondary); }
+    .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .summary-label { font-weight: 600; }
+    .summary-value { font-weight: 700; color: var(--blue); }
+    .form-section { padding: 24px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; background: var(--bg); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn-confirm { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 16px; }
+    .btn-confirm:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="booking-container">
+  <div class="booking-wrapper">
+    <a href="/school/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Schools</a>
+    <div id="bookingContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading enquiry details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadBooking() {
+    const tempData = sessionStorage.getItem('booking_temp');
+    let bookingInfo = null;
+    
+    if (tempData) {
+      bookingInfo = JSON.parse(tempData);
+    } else {
+      const type = getQueryParam('type');
+      const id = getQueryParam('id');
+      const name = getQueryParam('name');
+      const fee = getQueryParam('fee');
+      if (type && name) {
+        bookingInfo = { type: 'school', serviceType: type, id: id, name: name, fee: fee || 'Contact for quote' };
+      }
+    }
+    
+    if (!bookingInfo) { errorPage(); return; }
+    
+    const serviceIcons = { school: '🏫', tuition: '📖', tutor: '👩‍🏫' };
+    const icon = serviceIcons[bookingInfo.serviceType] || '📚';
+    
+    const isTutor = bookingInfo.serviceType === 'tutor';
+    const isTuition = bookingInfo.serviceType === 'tuition';
+    
+    const html = `
+      <div class="booking-card">
+        <div class="service-header">
+          <div class="service-icon">${icon}</div>
+          <div class="service-name">${bookingInfo.name || 'Education Service'}</div>
+          <div class="service-meta">${isTutor ? 'Private Tutor Enquiry' : isTuition ? 'Tuition Center Enquiry' : 'School Admission Enquiry'}</div>
+        </div>
+        
+        <div class="booking-summary">
+          <div class="summary-row"><span class="summary-label">Service</span><span class="summary-value">${bookingInfo.name}</span></div>
+          <div class="summary-row"><span class="summary-label">Fee Structure</span><span class="summary-value">${bookingInfo.fee}</span></div>
+        </div>
+        
+        <div class="form-section">
+          <form id="bookingForm">
+            <div class="form-row">
+              <div class="form-group"><label>Parent/Student Full Name *</label><input type="text" id="fullName" required></div>
+              <div class="form-group"><label>WhatsApp Number *</label><input type="tel" id="phone" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Student Name *</label><input type="text" id="studentName" required></div>
+              <div class="form-group"><label>Class / Grade *</label><select id="grade"><option>Nursery</option><option>LKG</option><option>UKG</option><option>1st</option><option>2nd</option><option>3rd</option><option>4th</option><option>5th</option><option>6th</option><option>7th</option><option>8th</option><option>9th</option><option>10th</option><option>11th</option><option>12th</option></select></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>${isTutor ? 'Subject Required *' : isTuition ? 'Subject(s) *' : 'Preferred Stream'}</label>
+                <select id="subject">
+                  <option value="">Select</option>
+                  ${isTutor || isTuition ? `<option>Mathematics</option><option>Science</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>English</option><option>Hindi</option><option>Sanskrit</option><option>Social Studies</option><option>Computer Science</option>` : `<option>Science</option><option>Commerce</option><option>Arts</option><option>Other</option>`}
+                </select>
+              </div>
+              <div class="form-group"><label>Preferred Timings</label><input type="text" id="timings" placeholder="e.g., 4 PM - 6 PM"></div>
+            </div>
+            <div class="form-group"><label>Address *</label><input type="text" id="address" required placeholder="Your full address"></div>
+            <div class="form-group"><label>Additional Requirements</label><textarea id="requirements" rows="3" placeholder="Any specific requirements or questions..."></textarea></div>
+            <button type="submit" class="btn-confirm">✅ Send Enquiry</button>
+          </form>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('bookingContent').innerHTML = html;
+    
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) { if (document.getElementById('fullName')) document.getElementById('fullName').value = user.name || ''; if (document.getElementById('phone')) document.getElementById('phone').value = user.phone || ''; }
+    
+    document.getElementById('bookingForm').addEventListener('submit', (e) => submitEnquiry(e, bookingInfo));
+  }
+  
+  function submitEnquiry(e, bookingInfo) {
+    e.preventDefault();
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to enquire', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    
+    const name = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const studentName = document.getElementById('studentName').value.trim();
+    const grade = document.getElementById('grade').value;
+    const subject = document.getElementById('subject').value;
+    const timings = document.getElementById('timings').value;
+    const address = document.getElementById('address').value.trim();
+    const requirements = document.getElementById('requirements').value;
+    
+    if (!name || !phone || !studentName || !address) { WeConnect.showToast('Please fill all required fields', 'error'); return; }
+    
+    const bookingId = 'LC-' + Date.now();
+    const booking = {
+      id: bookingId, userId: user.id, userPhone: user.phone, userName: user.name || name,
+      serviceType: bookingInfo.serviceType === 'tutor' ? "Private Tutor" : bookingInfo.serviceType === 'tuition' ? "Tuition Center" : "School Admission",
+      serviceName: bookingInfo.name,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      formData: { institution: bookingInfo.name, studentName: studentName, grade: grade, subject: subject, timings: timings, address: address, requirements: requirements, parentName: name, parentPhone: phone }
+    };
+    
+    let bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
+    bookings.push(booking);
+    localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+    
+    sessionStorage.removeItem('booking_temp');
+    WeConnect.showToast(`✅ Enquiry sent! ID: ${bookingId}`, 'success');
+    setTimeout(() => window.location.href = `/user/confirmation.html?id=${bookingId}`, 1500);
+  }
+  
+  function errorPage() { document.getElementById('bookingContent').innerHTML = `<div class="booking-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Enquiry Error</h3><p>No service selected. Please go back and try again.</p><a href="/school/index.html" class="btn btn-primary">Back to Schools</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  updateUI();
+  loadBooking();
+</script>
+</body>
+</html>

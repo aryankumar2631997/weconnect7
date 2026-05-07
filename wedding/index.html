@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Wedding Services | WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .wedding-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .wedding-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 32px; background: var(--bg-secondary); padding: 6px; border-radius: var(--radius-xl); flex-wrap: wrap; }
+    .tab-btn { padding: 12px 24px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-light); cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s; }
+    .tab-btn.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow-sm); }
+    
+    .vendors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .vendor-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .vendor-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .vendor-image { height: 140px; background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); display: flex; align-items: center; justify-content: center; font-size: 56px; border-bottom: 1px solid var(--border); }
+    .vendor-info { padding: 20px; }
+    .vendor-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .vendor-location { font-size: 13px; color: var(--text-light); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .vendor-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .stars { color: #F59E0B; font-size: 12px; }
+    .vendor-price { font-size: 14px; font-weight: 700; color: var(--blue); margin-top: 8px; }
+    .vendor-footer { padding: 16px 20px; background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .book-btn { padding: 8px 24px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .book-btn:hover { background: #333; transform: translateY(-2px); }
+    
+    .complete-package-card { background: linear-gradient(135deg, var(--bg), var(--bg-secondary)); border: 2px solid var(--border); margin-top: 32px; padding: 32px; border-radius: var(--radius-xl); text-align: center; }
+    .package-price { font-size: 36px; font-weight: 800; color: var(--blue); margin: 16px 0; }
+    .package-features { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 20px 0; }
+    .package-feature { padding: 8px 20px; background: var(--bg); border-radius: 40px; font-size: 13px; }
+    .btn-package { padding: 14px 40px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .btn-package:hover { background: #333; transform: translateY(-2px); }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .tabs { justify-content: center; }
+      .vendors-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="wedding-container">
+  <div class="wedding-wrapper">
+    <div class="page-header">
+      <h1>💍 Wedding Services</h1>
+      <p>Complete wedding planning - venues, catering, photography, decoration, DJ, and more</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">20+</div><div class="stat-label-sm">Venues</div></div>
+      <div class="stat-item"><div class="stat-number-lg">15+</div><div class="stat-label-sm">Caterers</div></div>
+      <div class="stat-item"><div class="stat-number-lg">15+</div><div class="stat-label-sm">Photographers</div></div>
+      <div class="stat-item"><div class="stat-number-lg">20+</div><div class="stat-label-sm">Decorators & DJs</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search vendors by name or location..."></div>
+        <select id="priceFilter" class="filter-select"><option value="all">All Budgets</option><option value="budget">Budget (Under ₹50k)</option><option value="mid">Mid (₹50k-2L)</option><option value="premium">Premium (₹2L+)</option></select>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="venues">🏰 Venues</button>
+      <button class="tab-btn" data-tab="catering">🍽️ Catering</button>
+      <button class="tab-btn" data-tab="photography">📸 Photography</button>
+      <button class="tab-btn" data-tab="decoration">🎨 Decoration</button>
+      <button class="tab-btn" data-tab="dj">🎵 DJ / Music</button>
+    </div>
+    
+    <div id="vendorsGrid" class="vendors-grid"></div>
+    
+    <!-- Complete Wedding Package -->
+    <div class="complete-package-card">
+      <div style="font-size: 48px; margin-bottom: 16px;">💍✨</div>
+      <h2 style="font-size: 28px; font-weight: 800;">Complete Wedding Package</h2>
+      <p style="color: var(--text-light); margin-bottom: 16px;">Get everything in one place - Venue, Catering, Photography, Decoration, DJ, and Transport</p>
+      <div class="package-features">
+        <span class="package-feature">🏰 Venue</span>
+        <span class="package-feature">🍽️ Catering</span>
+        <span class="package-feature">📸 Photography</span>
+        <span class="package-feature">🎨 Decoration</span>
+        <span class="package-feature">🎵 DJ</span>
+        <span class="package-feature">🚗 Transport</span>
+      </div>
+      <div class="package-price">Custom Quote</div>
+      <button class="btn-package" onclick="bookCompletePackage()">Plan Your Wedding →</button>
+    </div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const vendorsData = {
+    venues: [
+      { id: 101, name: "Maharaja Grand", location: "Main Bazaar, Lakhisarai", rating: 4.8, reviews: 567, price: "₹30,000-1,00,000", capacity: "500-700", image: "🏰", type: "venue" },
+      { id: 102, name: "Rajdhani Banquet Hall", location: "Station Road, Lakhisarai", rating: 4.3, reviews: 234, price: "₹15,000-50,000", capacity: "200-300", image: "🏰", type: "venue" },
+      { id: 103, name: "City Palace Lawn", location: "Katoria Road, Lakhisarai", rating: 4.5, reviews: 189, price: "₹20,000-60,000", capacity: "300-500", image: "🏰", type: "venue" }
+    ],
+    catering: [
+      { id: 201, name: "Royal Catering", location: "Lakhisarai", rating: 4.7, reviews: 456, price: "₹400-800/plate", cuisine: "Veg/Non-Veg", image: "🍽️", type: "catering" },
+      { id: 202, name: "Spice Garden Catering", location: "Lakhisarai", rating: 4.5, reviews: 321, price: "₹350-600/plate", cuisine: "Traditional", image: "🍽️", type: "catering" },
+      { id: 203, name: "Grand Caterers", location: "Lakhisarai", rating: 4.6, reviews: 278, price: "₹500-900/plate", cuisine: "Multi-cuisine", image: "🍽️", type: "catering" }
+    ],
+    photography: [
+      { id: 301, name: "Memories Photography", location: "Lakhisarai", rating: 4.9, reviews: 432, price: "₹25,000-70,000", style: "Candid & Traditional", image: "📸", type: "photography" },
+      { id: 302, name: "Wedding Studio", location: "Lakhisarai", rating: 4.7, reviews: 298, price: "₹20,000-50,000", style: "Pre-wedding & Wedding", image: "📸", type: "photography" }
+    ],
+    decoration: [
+      { id: 401, name: "Floral Dreams Decor", location: "Lakhisarai", rating: 4.7, reviews: 312, price: "₹15,000-60,000", style: "Flower & Theme", image: "🎨", type: "decoration" },
+      { id: 402, name: "Royal Decorators", location: "Lakhisarai", rating: 4.8, reviews: 278, price: "₹20,000-80,000", style: "Luxury & Lighting", image: "🎨", type: "decoration" }
+    ],
+    dj: [
+      { id: 501, name: "DJ Sound Factory", location: "Lakhisarai", rating: 4.8, reviews: 234, price: "₹10,000-30,000", style: "All Genres", image: "🎵", type: "dj" },
+      { id: 502, name: "Wedding Beats", location: "Lakhisarai", rating: 4.6, reviews: 189, price: "₹8,000-25,000", style: "Live & DJ", image: "🎵", type: "dj" }
+    ]
+  };
+
+  let currentTab = 'venues';
+  let searchTerm = '';
+  let priceFilter = 'all';
+
+  function getStars(rating) { return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : ''); }
+
+  function renderVendors() {
+    const container = document.getElementById('vendorsGrid');
+    let items = vendorsData[currentTab];
+    
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm));
+    
+    if (priceFilter === 'budget') items = items.filter(item => parseInt(item.price) < 50000);
+    else if (priceFilter === 'mid') items = items.filter(item => parseInt(item.price) >= 50000 && parseInt(item.price) < 200000);
+    else if (priceFilter === 'premium') items = items.filter(item => parseInt(item.price) >= 200000);
+    
+    if (items.length === 0) { container.innerHTML = '<div style="text-align:center;padding:60px;"><i class="fas fa-search" style="font-size:48px;opacity:0.5;"></i><h3>No vendors found</h3></div>'; return; }
+    
+    container.innerHTML = items.map(vendor => `
+      <div class="vendor-card">
+        <div class="vendor-image">${vendor.image}</div>
+        <div class="vendor-info">
+          <div class="vendor-name">${vendor.name}</div>
+          <div class="vendor-location"><i class="fas fa-map-marker-alt"></i> ${vendor.location}</div>
+          <div class="vendor-rating"><span class="stars">${getStars(vendor.rating)}</span><span>(${vendor.reviews} reviews)</span></div>
+          <div class="vendor-price">💰 ${vendor.price}${vendor.capacity ? ` • 👥 ${vendor.capacity}` : ''}</div>
+        </div>
+        <div class="vendor-footer">
+          <button class="book-btn" onclick="bookVendor('${currentTab}', ${vendor.id}, '${vendor.name}', '${vendor.price}')">Book Now →</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function bookVendor(type, id, name, price) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'wedding', serviceType: type, vendorId: id, vendorName: name, price: price }));
+    window.location.href = `/wedding/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&price=${price}`;
+  }
+
+  function bookCompletePackage() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'wedding', serviceType: 'complete-package', packageName: 'Complete Wedding Package', price: 'Custom Quote' }));
+    window.location.href = `/wedding/booking.html?type=complete-package&name=Complete%20Wedding%20Package&price=Custom%20Quote`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      renderVendors();
+    });
+  });
+  
+  document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderVendors(); });
+  document.getElementById('priceFilter').addEventListener('change', (e) => { priceFilter = e.target.value; renderVendors(); });
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block';
+      if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none';
+      if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookVendor = bookVendor;
+  window.bookCompletePackage = bookCompletePackage;
+  updateUI();
+  renderVendors();
+</script>
+</body>
+</html>

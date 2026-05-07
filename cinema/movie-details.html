@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Movie Details | WeConnect Cinema</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .movie-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .movie-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .movie-poster-large { width: 120px; height: 160px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 60px; }
+    .movie-info { flex: 1; }
+    .movie-name { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .movie-details { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; font-size: 14px; color: var(--text-muted); }
+    .movie-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .cast-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .cast-item { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 30px; font-size: 13px; }
+    .theaters-list { display: flex; flex-direction: column; gap: 16px; }
+    .theater-item { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .theater-name { font-weight: 700; font-size: 16px; }
+    .theater-location { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .showtimes-list { display: flex; gap: 10px; flex-wrap: wrap; }
+    .showtime-btn { padding: 6px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .showtime-btn:hover { background: var(--text); color: var(--bg); }
+    .btn-book { padding: 10px 28px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-book:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .movie-header { flex-direction: column; text-align: center; } .theater-item { flex-direction: column; text-align: center; } .showtimes-list { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/cinema/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cinema</a>
+    <div id="movieContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading movie details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const moviesDB = {
+    "Pushpa 2": { title: "Pushpa 2", language: "Hindi (4K)", duration: "2h 45m", rating: 4.9, genre: "Action/Drama", director: "Sukumar", cast: ["Allu Arjun", "Rashmika Mandanna", "Fahadh Faasil"], releaseDate: "15 Jan 2025", poster: "🔥", about: "Pushpa 2 is the highly anticipated sequel to the blockbuster Pushpa: The Rise. The film continues the story of Pushpa Raj, a sandalwood smuggler, and his rise to power." },
+    "Animal": { title: "Animal", language: "Hindi (4K)", duration: "3h 21m", rating: 4.8, genre: "Action/Drama", director: "Sandeep Reddy Vanga", cast: ["Ranbir Kapoor", "Anil Kapoor", "Bobby Deol", "Rashmika Mandanna"], releaseDate: "1 Dec 2023", poster: "🐺", about: "Animal explores the complex relationship between a father and son set against the backdrop of violence and crime." },
+    "Fighter": { title: "Fighter", language: "Hindi (4K)", duration: "2h 46m", rating: 4.7, genre: "Action/Thriller", director: "Siddharth Anand", cast: ["Hrithik Roshan", "Deepika Padukone", "Anil Kapoor"], releaseDate: "25 Jan 2024", poster: "✈️", about: "Fighter is an aerial action film showcasing the Indian Air Force and their courage." },
+    "Dunki": { title: "Dunki", language: "Hindi", duration: "2h 41m", rating: 4.6, genre: "Comedy/Drama", director: "Rajkumar Hirani", cast: ["Shah Rukh Khan", "Taapsee Pannu", "Vicky Kaushal"], releaseDate: "21 Dec 2023", poster: "🎒", about: "Dunki is a heartwarming story about friends who dream of going abroad using the illegal 'donkey flight' method." },
+    "Salaar": { title: "Salaar", language: "Hindi (4K)", duration: "2h 55m", rating: 4.8, genre: "Action/Thriller", director: "Prashanth Neel", cast: ["Prabhas", "Prithviraj Sukumaran", "Shruti Haasan"], releaseDate: "22 Dec 2023", poster: "⚔️", about: "Salaar is an action-packed saga about a fierce warrior and his journey for power and revenge." }
+  };
+
+  const movieShowtimes = {
+    "Pushpa 2": [{ theaterId: 1, theaterName: "Raj Talkies", location: "Station Road", showtimes: ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"], price: 120 }],
+    "Animal": [{ theaterId: 1, theaterName: "Raj Talkies", location: "Station Road", showtimes: ["11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"], price: 120 }],
+    "Fighter": [{ theaterId: 2, theaterName: "Mahadev Talkies", location: "Katoria Road", showtimes: ["1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"], price: 140 }],
+    "Dunki": [{ theaterId: 2, theaterName: "Mahadev Talkies", location: "Katoria Road", showtimes: ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"], price: 120 }],
+    "Salaar": [{ theaterId: 2, theaterName: "Mahadev Talkies", location: "Katoria Road", showtimes: ["12:30 PM", "3:30 PM", "6:30 PM", "9:30 PM"], price: 130 }]
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadMovie() {
+    const title = getQueryParam('title');
+    if (!title || !moviesDB[title]) { errorPage(); return; }
+    
+    const movie = moviesDB[title];
+    const showtimes = movieShowtimes[title] || [];
+    const starsFull = Math.floor(movie.rating);
+    const starsHalf = movie.rating % 1 >= 0.5 ? '½' : '';
+    
+    const castHtml = movie.cast.map(c => `<span class="cast-item">${c}</span>`).join('');
+    
+    const theatersHtml = showtimes.map(theater => `
+      <div class="theater-item">
+        <div>
+          <div class="theater-name">🎬 ${theater.theaterName}</div>
+          <div class="theater-location"><i class="fas fa-map-marker-alt"></i> ${theater.location}</div>
+        </div>
+        <div class="showtimes-list">
+          ${theater.showtimes.map(time => `<button class="showtime-btn" onclick="bookTicket('${theater.theaterId}', '${movie.title}', '${time}', ${theater.price})">${time}</button>`).join('')}
+        </div>
+        <div><span class="movie-price">₹${theater.price}</span></div>
+      </div>
+    `).join('');
+    
+    const html = `
+      <div class="movie-card">
+        <div class="movie-header">
+          <div class="movie-poster-large">${movie.poster}</div>
+          <div class="movie-info">
+            <div class="movie-name">${movie.title}</div>
+            <div class="movie-details"><span>🎬 ${movie.genre}</span><span>⏱️ ${movie.duration}</span><span>🌐 ${movie.language}</span><span>📅 ${movie.releaseDate}</span></div>
+            <div class="movie-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${movie.rating}/5 (IMDb)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Cinema</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> Synopsis</div><p style="color: var(--text-light); line-height: 1.6;">${movie.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-video"></i> Movie Details</div><div class="info-grid"><div class="info-item"><div class="info-label">Director</div><div class="info-value">${movie.director}</div></div><div class="info-item"><div class="info-label">Genre</div><div class="info-value">${movie.genre}</div></div><div class="info-item"><div class="info-label">Language</div><div class="info-value">${movie.language}</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-users"></i> Star Cast</div><div class="cast-list">${castHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-ticket-alt"></i> Showtimes & Booking</div><div class="theaters-list">${theatersHtml}</div><div style="margin-top: 20px;"><button class="btn-book" onclick="bookTicketAny()">🎟️ Book Tickets Now</button></div></div>
+      </div>
+    `;
+    
+    document.getElementById('movieContent').innerHTML = html;
+  }
+  
+  function bookTicket(theaterId, movieTitle, showTime, price) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book tickets', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ theaterId, movieTitle, showTime, price }));
+    window.location.href = `/cinema/booking.html`;
+  }
+  
+  function bookTicketAny() {
+    const title = getQueryParam('title');
+    const showtimes = movieShowtimes[title];
+    if (showtimes && showtimes.length > 0) {
+      const first = showtimes[0];
+      bookTicket(first.theaterId, title, first.showtimes[0], first.price);
+    }
+  }
+  
+  function errorPage() { document.getElementById('movieContent').innerHTML = `<div class="movie-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Movie Not Found</h3><a href="/cinema/index.html" class="btn btn-primary">Back to Cinema</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookTicket = bookTicket;
+  window.bookTicketAny = bookTicketAny;
+  updateUI();
+  loadMovie();
+</script>
+</body>
+</html>

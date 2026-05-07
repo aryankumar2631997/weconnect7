@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Restaurant Details | WeConnect Delivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .restaurant-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .restaurant-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .restaurant-icon { width: 100px; height: 100px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .restaurant-info { flex: 1; }
+    .restaurant-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .restaurant-cuisine { font-size: 14px; color: var(--blue); margin-bottom: 12px; }
+    .restaurant-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .restaurant-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; font-size: 13px; color: var(--text-muted); }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .menu-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .menu-name { font-weight: 600; font-size: 15px; }
+    .menu-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .menu-price { font-weight: 700; color: var(--blue); }
+    .add-btn { padding: 4px 12px; background: var(--text); color: var(--bg); border: none; border-radius: 20px; font-size: 11px; cursor: pointer; }
+    .cart-bar { position: sticky; bottom: 0; background: var(--text); color: var(--bg); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-radius: var(--radius-lg); margin-top: 20px; }
+    .cart-total { font-size: 18px; font-weight: 700; }
+    .btn-checkout { padding: 10px 28px; background: var(--confirmed); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; background: rgba(16,185,129,0.1); color: var(--confirmed); }
+    @media (max-width: 768px) { .menu-grid { grid-template-columns: 1fr; } .restaurant-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } .restaurant-meta { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/delivery/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Delivery</a>
+    <div id="restaurantContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading restaurant details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  const restaurantsDB = {
+    101: {
+      name: "Biryani House", cuisine: "North Indian, Mughlai", rating: 4.5, reviews: 345,
+      location: "Station Road, Lakhisarai", deliveryTime: "35-45 min", priceForTwo: "₹400",
+      about: "Biryani House is famous for its authentic Dum Biryani and Mughlai dishes. We use only fresh ingredients and traditional spices.",
+      menu: [
+        { name: "Chicken Biryani", desc: "Authentic Dum Biryani with spices", price: 220, veg: false },
+        { name: "Mutton Biryani", desc: "Tender mutton with aromatic rice", price: 320, veg: false },
+        { name: "Veg Biryani", desc: "Fresh vegetables with basmati rice", price: 180, veg: true },
+        { name: "Butter Chicken", desc: "Creamy tomato gravy with tandoori chicken", price: 280, veg: false },
+        { name: "Paneer Butter Masala", desc: "Soft paneer in rich gravy", price: 220, veg: true },
+        { name: "Garlic Naan", desc: "Butter garlic naan", price: 40, veg: true },
+        { name: "Raita", desc: "Fresh yogurt with spices", price: 40, veg: true },
+        { name: "Gulab Jamun", desc: "Soft milk dumplings in sugar syrup", price: 50, veg: true }
+      ]
+    },
+    102: {
+      name: "Pizza Point", cuisine: "Italian, Fast Food", rating: 4.3, reviews: 289,
+      location: "Main Bazaar, Lakhisarai", deliveryTime: "25-35 min", priceForTwo: "₹350",
+      about: "Pizza Point serves delicious pizzas, pasta, and burgers. Made with fresh ingredients and 100% mozzarella cheese.",
+      menu: [
+        { name: "Margherita Pizza", desc: "Classic cheese pizza", price: 180, veg: true },
+        { name: "Farmhouse Pizza", desc: "Fresh vegetables and cheese", price: 240, veg: true },
+        { name: "Chicken Pepperoni Pizza", desc: "Spicy pepperoni with cheese", price: 280, veg: false },
+        { name: "Veg Pasta", desc: "Penne in creamy sauce", price: 160, veg: true },
+        { name: "Chicken Pasta", desc: "Penne with chicken in white sauce", price: 220, veg: false },
+        { name: "Garlic Bread", desc: "Toasted bread with garlic butter", price: 80, veg: true },
+        { name: "Cold Drink", desc: "Coke/Pepsi/Dew", price: 40, veg: true }
+      ]
+    }
+  };
+
+  let cart = [];
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadRestaurant() {
+    const id = getQueryParam('id');
+    if (!id || !restaurantsDB[id]) { errorPage(); return; }
+    
+    const restaurant = restaurantsDB[id];
+    const starsFull = Math.floor(restaurant.rating);
+    const starsHalf = restaurant.rating % 1 >= 0.5 ? '½' : '';
+    
+    const menuHtml = restaurant.menu.map(item => `
+      <div class="menu-item">
+        <div>
+          <div class="menu-name">${item.name} ${item.veg ? '🌱' : '🍗'}</div>
+          <div class="menu-desc">${item.desc}</div>
+        </div>
+        <div>
+          <span class="menu-price">₹${item.price}</span>
+          <button class="add-btn" onclick="addToCart('${item.name}', ${item.price})">Add</button>
+        </div>
+      </div>
+    `).join('');
+    
+    const html = `
+      <div class="restaurant-card">
+        <div class="restaurant-header">
+          <div class="restaurant-icon">🍕</div>
+          <div class="restaurant-info">
+            <div class="restaurant-name">${restaurant.name}</div>
+            <div class="restaurant-cuisine">${restaurant.cuisine}</div>
+            <div class="restaurant-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${restaurant.rating} (${restaurant.reviews} reviews)</div>
+            <div class="restaurant-meta"><span>🚚 Delivery: ${restaurant.deliveryTime}</span><span>💰 Price for two: ${restaurant.priceForTwo}</span><span>📍 ${restaurant.location}</span></div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Restaurant</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light);">${restaurant.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-utensils"></i> Menu</div><div class="menu-grid">${menuHtml}</div></div>
+        
+        <div id="cartBar" class="cart-bar" style="display: none;">
+          <div><span>🛒 Cart: <span id="cartCount">0</span> items</span></div>
+          <div class="cart-total">Total: ₹<span id="cartTotal">0</span></div>
+          <button class="btn-checkout" onclick="checkout('${restaurant.name}')">Place Order →</button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('restaurantContent').innerHTML = html;
+  }
+  
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    updateCartUI();
+  }
+  
+  function updateCartUI() {
+    const cartBar = document.getElementById('cartBar');
+    if (cart.length > 0) {
+      cartBar.style.display = 'flex';
+      document.getElementById('cartCount').textContent = cart.length;
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById('cartTotal').textContent = total;
+    } else {
+      cartBar.style.display = 'none';
+    }
+  }
+  
+  function checkout(restaurantName) {
+    if (cart.length === 0) { WeConnect.showToast('Add items to cart first', 'warning'); return; }
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to place order', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    const total = cart.reduce((sum, i) => sum + i.price, 0);
+    const items = cart.map(i => `${i.name} (₹${i.price})`).join(', ');
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'delivery', serviceType: 'restaurant', name: restaurantName, items: items, total: total }));
+    window.location.href = `/delivery/booking.html?type=restaurant&name=${encodeURIComponent(restaurantName)}&total=${total}`;
+  }
+  
+  function errorPage() { document.getElementById('restaurantContent').innerHTML = `<div class="restaurant-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Restaurant Not Found</h3><a href="/delivery/index.html" class="btn btn-primary">Back to Delivery</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.addToCart = addToCart;
+  window.checkout = checkout;
+  updateUI();
+  loadRestaurant();
+</script>
+</body>
+</html> 

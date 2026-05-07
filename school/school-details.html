@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>School Details | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .school-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .school-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .school-icon { width: 80px; height: 80px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .school-info { flex: 1; }
+    .school-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .school-location { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .school-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .features-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .feature-tag { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 30px; font-size: 13px; }
+    .btn-enquire { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+    .btn-enquire:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .school-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/school/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Schools</a>
+    <div id="schoolContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading school details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+>
+
+<script>
+  const schoolsDB = {
+    1: { name: "St. Joseph's School", location: "Station Road, Lakhisarai", rating: 4.5, reviews: 234, fee: "₹25,000/year", board: "CBSE", classes: "Nursery - 12th", about: "St. Joseph's School is a premier educational institution with excellent academic record and modern facilities.", features: ["Smart Classes", "Library", "Computer Lab", "Science Lab", "Sports Ground", "Transport", "CCTV Campus"], timings: "7:30 AM - 2:00 PM", principal: "Fr. John Mathew", admissionOpen: true },
+    2: { name: "Lakhisarai Public School", location: "Main Bazaar, Lakhisarai", rating: 4.3, reviews: 189, fee: "₹18,000/year", board: "BSEB", classes: "1st - 12th", about: "Lakhisarai Public School focuses on holistic development with affordable quality education.", features: ["Library", "Computer Lab", "Sports", "Art & Craft", "Scholarship Programs"], timings: "8:00 AM - 2:30 PM", principal: "Dr. S.K. Sinha", admissionOpen: true },
+    3: { name: "Kendriya Vidyalaya", location: "Katoria Road, Lakhisarai", rating: 4.7, reviews: 312, fee: "₹20,000/year", board: "CBSE", classes: "1st - 12th", about: "Kendriya Vidyalaya is a centrally funded school known for excellent academic results and co-curricular activities.", features: ["Smart Classes", "Library", "Computer Lab", "Science Lab", "Sports", "Meditation Hall"], timings: "7:45 AM - 2:15 PM", principal: "Mrs. Kavita Sharma", admissionOpen: true },
+    4: { name: "Little Flower School", location: "Shastri Nagar, Lakhisarai", rating: 4.4, reviews: 156, fee: "₹15,000/year", board: "ICSE", classes: "Nursery - 10th", about: "Little Flower School provides quality education with focus on moral values and discipline.", features: ["Library", "Computer Lab", "Science Lab", "Sports", "Music Room", "Art Room"], timings: "8:00 AM - 2:00 PM", principal: "Sr. Mary Theresa", admissionOpen: true }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadSchool() {
+    const id = getQueryParam('id');
+    if (!id || !schoolsDB[id]) { errorPage(); return; }
+    
+    const school = schoolsDB[id];
+    const starsFull = Math.floor(school.rating);
+    const starsHalf = school.rating % 1 >= 0.5 ? '½' : '';
+    
+    const featuresHtml = school.features.map(f => `<span class="feature-tag">✅ ${f}</span>`).join('');
+    
+    const html = `
+      <div class="school-card">
+        <div class="school-header">
+          <div class="school-icon">🏫</div>
+          <div class="school-info">
+            <div class="school-name">${school.name}</div>
+            <div class="school-location"><i class="fas fa-map-marker-alt"></i> ${school.location}</div>
+            <div class="school-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${school.rating} (${school.reviews} reviews)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call School</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light);">${school.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-graduation-cap"></i> School Information</div><div class="info-grid"><div class="info-item"><div class="info-label">Board</div><div class="info-value">${school.board}</div></div><div class="info-item"><div class="info-label">Classes</div><div class="info-value">${school.classes}</div></div><div class="info-item"><div class="info-label">Annual Fee</div><div class="info-value">${school.fee}</div></div><div class="info-item"><div class="info-label">Timings</div><div class="info-value">${school.timings}</div></div><div class="info-item"><div class="info-label">Principal</div><div class="info-value">${school.principal}</div></div><div class="info-item"><div class="info-label">Admission</div><div class="info-value">${school.admissionOpen ? '✅ Open' : '❌ Closed'}</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-star"></i> Facilities & Features</div><div class="features-list">${featuresHtml}</div></div>
+        
+        <button class="btn-enquire" onclick="enquireSchool(${id}, '${school.name}', '${school.fee}')">📝 Enquire for Admission →</button>
+      </div>
+    `;
+    
+    document.getElementById('schoolContent').innerHTML = html;
+  }
+  
+  function enquireSchool(id, name, fee) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to enquire', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'school', serviceType: 'school', id: id, name: name, fee: fee }));
+    window.location.href = `/school/booking.html?type=school&id=${id}&name=${encodeURIComponent(name)}&fee=${fee}`;
+  }
+  
+  function errorPage() { document.getElementById('schoolContent').innerHTML = `<div class="school-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>School Not Found</h3><a href="/school/index.html" class="btn btn-primary">Back to Schools</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.enquireSchool = enquireSchool;
+  updateUI();
+  loadSchool();
+</script>
+</body>
+</html>

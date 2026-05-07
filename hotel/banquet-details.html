@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Banquet Hall Details | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .banquet-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .banquet-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .banquet-icon { width: 80px; height: 80px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .banquet-info { flex: 1; }
+    .banquet-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .banquet-location { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .banquet-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .packages-grid { display: flex; flex-direction: column; gap: 16px; }
+    .package-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .package-name { font-size: 16px; font-weight: 700; }
+    .package-price { font-size: 18px; font-weight: 700; color: var(--blue); }
+    .package-features { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .btn-book-package { padding: 10px 28px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-book-package:hover { background: #333; transform: translateY(-2px); }
+    .features-list { display: flex; flex-wrap: wrap; gap: 12px; }
+    .feature { padding: 8px 16px; background: var(--bg-secondary); border-radius: 30px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .package-item { flex-direction: column; text-align: center; } .banquet-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/hotel/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Hotels</a>
+    <div id="banquetContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading banquet hall details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const banquetsData = {
+    101: { name: "Rajdhani Banquet Hall", location: "Station Road, Lakhisarai", rating: 4.3, reviews: 234, capacity: "250 guests", area: "2000 sq ft", packages: [{ name: "Basic Package", price: 15000, features: ["Hall Only", "Basic Lighting", "Chairs & Tables"] }, { name: "Standard Package", price: 25000, features: ["Hall", "Decoration", "Basic Catering (₹500/plate)", "Sound System"] }, { name: "Premium Package", price: 50000, features: ["Hall", "Premium Decoration", "Catering (₹800/plate)", "DJ", "Photography"] }], amenities: ["AC Hall", "Parking", "Changing Rooms", "Power Backup", "WiFi"], about: "Rajdhani Banquet Hall is perfect for weddings, receptions, and corporate events." },
+    102: { name: "Maharaja Grand", location: "Main Bazaar, Lakhisarai", rating: 4.8, reviews: 567, capacity: "700 guests", area: "5000 sq ft", packages: [{ name: "Grand Hall", price: 30000, features: ["Hall Only", "AC", "Basic Setup"] }, { name: "Royal Package", price: 80000, features: ["Hall", "Royal Decoration", "Catering (₹600/plate)", "DJ", "Photography", "Welcome Drinks"] }, { name: "Wedding Package", price: 150000, features: ["Hall", "Luxury Decoration", "Catering (₹800/plate)", "DJ", "Photography", "Makeup Artist", "Transport"] }], amenities: ["AC Hall", "Outdoor Lawn", "Parking", "Changing Rooms", "Catering Services", "DJ System"], about: "Maharaja Grand is the largest banquet hall in Lakhisarai, perfect for grand weddings and celebrations." },
+    103: { name: "City Palace Lawn", location: "Katoria Road, Lakhisarai", rating: 4.5, reviews: 189, capacity: "400 guests", area: "3000 sq ft", packages: [{ name: "Lawn Only", price: 20000, features: ["Open Lawn", "Basic Setup"] }, { name: "Decor Package", price: 35000, features: ["Lawn", "Flower Decoration", "Lighting", "Stage Setup"] }, { name: "Complete Package", price: 60000, features: ["Lawn", "Decoration", "Catering (₹500/plate)", "DJ", "Tent"] }], amenities: ["Open Lawn", "Parking", "Stage", "Lighting", "Catering Available"], about: "City Palace Lawn offers a beautiful open-air venue for outdoor weddings and parties." }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadBanquet() {
+    const id = getQueryParam('id');
+    if (!id || !banquetsData[id]) { errorPage(); return; }
+    
+    const hall = banquetsData[id];
+    const starsFull = Math.floor(hall.rating);
+    const starsHalf = hall.rating % 1 >= 0.5 ? '½' : '';
+    
+    let packagesHtml = hall.packages.map(pkg => `
+      <div class="package-item">
+        <div>
+          <div class="package-name">📦 ${pkg.name}</div>
+          <div class="package-features">${pkg.features.join(' • ')}</div>
+        </div>
+        <div>
+          <div class="package-price">₹${pkg.price.toLocaleString()}</div>
+        </div>
+        <button class="btn-book-package" onclick="bookPackage(${id}, '${pkg.name}', ${pkg.price})">Book Now →</button>
+      </div>
+    `).join('');
+    
+    const amenitiesHtml = hall.amenities.map(a => `<span class="feature">✅ ${a}</span>`).join('');
+    
+    const html = `
+      <div class="banquet-card">
+        <div class="banquet-header">
+          <div class="banquet-icon">🎉</div>
+          <div class="banquet-info">
+            <div class="banquet-name">${hall.name}</div>
+            <div class="banquet-location"><i class="fas fa-map-marker-alt"></i> ${hall.location}</div>
+            <div class="banquet-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${hall.rating} (${hall.reviews} reviews)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Venue</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light);">${hall.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-chalkboard-user"></i> Event Packages</div><div class="packages-grid">${packagesHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-building"></i> Venue Details</div><div class="info-grid"><div class="info-item"><div class="info-label">Capacity</div><div class="info-value">${hall.capacity}</div></div><div class="info-item"><div class="info-label">Area</div><div class="info-value">${hall.area}</div></div><div class="info-item"><div class="info-label">Booking Amount</div><div class="info-value">50% Advance</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-concierge-bell"></i> Amenities & Services</div><div class="features-list">${amenitiesHtml}</div></div>
+      </div>
+    `;
+    
+    document.getElementById('banquetContent').innerHTML = html;
+  }
+  
+  function bookPackage(hallId, packageName, price) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    const hall = banquetsData[hallId];
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'banquet', serviceType: 'banquet', id: hallId, name: hall.name, packageName: packageName, price: price }));
+    window.location.href = `/hotel/booking.html?type=banquet&id=${hallId}&package=${encodeURIComponent(packageName)}&price=${price}`;
+  }
+  
+  function errorPage() { document.getElementById('banquetContent').innerHTML = `<div class="banquet-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Banquet Hall Not Found</h3><a href="/hotel/index.html" class="btn btn-primary">Back to Hotels</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookPackage = bookPackage;
+  updateUI();
+  loadBanquet();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Cinema | Movie Tickets - WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .cinema-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .cinema-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .theater-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; border: 1px solid var(--border); transition: all 0.2s; }
+    .theater-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .theater-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .theater-name { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .theater-rating { display: flex; align-items: center; gap: 8px; }
+    .stars { color: #F59E0B; font-size: 13px; }
+    .movies-list { padding: 16px 20px; }
+    .movie-item { display: flex; gap: 16px; padding: 16px; border-bottom: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .movie-item:last-child { border-bottom: none; }
+    .movie-item:hover { background: var(--bg-secondary); border-radius: var(--radius-md); }
+    .movie-poster { width: 60px; height: 80px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+    .movie-info { flex: 1; }
+    .movie-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .movie-language { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .showtimes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .showtime-btn { padding: 6px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .showtime-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .movie-price { font-size: 14px; font-weight: 700; color: var(--blue); margin-top: 8px; }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .theater-header { flex-direction: column; text-align: center; }
+      .movie-item { flex-direction: column; text-align: center; }
+      .showtimes { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="cinema-container">
+  <div class="cinema-wrapper">
+    <div class="page-header">
+      <h1>🎬 Cinema</h1>
+      <p>Book movie tickets at Raj Talkies and Mahadev Talkies. Choose your seats, pick your show.</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">2</div><div class="stat-label-sm">Theaters</div></div>
+      <div class="stat-item"><div class="stat-number-lg">5+</div><div class="stat-label-sm">Movies</div></div>
+      <div class="stat-item"><div class="stat-number-lg">4</div><div class="stat-label-sm">Shows Daily</div></div>
+      <div class="stat-item"><div class="stat-number-lg">₹120+</div><div class="stat-label-sm">Starting Price</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search movies, theaters..."></div>
+        <select id="movieFilter" class="filter-select"><option value="all">All Movies</option><option value="Pushpa 2">Pushpa 2</option><option value="Animal">Animal</option><option value="Fighter">Fighter</option><option value="Dunki">Dunki</option><option value="Salaar">Salaar</option></select>
+      </div>
+    </div>
+    
+    <div id="theatersList"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  const theaters = [
+    { id: 1, name: "Raj Talkies", location: "Station Road, Lakhisarai", rating: 4.3, reviews: 1280, movies: [{ title: "Pushpa 2", language: "Hindi (4K)", showtimes: ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"], price: 120, poster: "🔥" }, { title: "Animal", language: "Hindi (4K)", showtimes: ["11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"], price: 120, poster: "🐺" }] },
+    { id: 2, name: "Mahadev Talkies", location: "Katoria Road, Lakhisarai", rating: 4.1, reviews: 980, movies: [{ title: "Fighter", language: "Hindi (4K)", showtimes: ["1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"], price: 140, poster: "✈️" }, { title: "Dunki", language: "Hindi", showtimes: ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"], price: 120, poster: "🎒" }, { title: "Salaar", language: "Hindi (4K)", showtimes: ["12:30 PM", "3:30 PM", "6:30 PM", "9:30 PM"], price: 130, poster: "⚔️" }] }
+  ];
+
+  let currentFilter = 'all';
+
+  function renderTheaters() {
+    const container = document.getElementById('theatersList');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    let filteredTheaters = theaters.map(theater => ({ ...theater, movies: theater.movies.filter(m => m.title.toLowerCase().includes(searchTerm) && (currentFilter === 'all' || m.title === currentFilter)) })).filter(t => t.movies.length > 0);
+    
+    if (filteredTheaters.length === 0) { container.innerHTML = '<div style="text-align:center;padding:60px;"><i class="fas fa-film" style="font-size:48px;margin-bottom:16px;opacity:0.5;"></i><h3>No movies found</h3><p>Try adjusting your search</p></div>'; return; }
+    
+    container.innerHTML = filteredTheaters.map(theater => `
+      <div class="theater-card" data-theater-id="${theater.id}">
+        <div class="theater-header">
+          <div><div class="theater-name"><i class="fas fa-film"></i> ${theater.name}</div><div style="font-size:13px; color:var(--text-muted);"><i class="fas fa-map-marker-alt"></i> ${theater.location}</div></div>
+          <div class="theater-rating"><span class="stars">${'★'.repeat(Math.floor(theater.rating))}${theater.rating%1>=0.5?'½':''}</span><span>(${theater.reviews} reviews)</span></div>
+        </div>
+        <div class="movies-list">${theater.movies.map(movie => `
+          <div class="movie-item" data-movie="${movie.title}">
+            <div class="movie-poster">${movie.poster}</div>
+            <div class="movie-info">
+              <div class="movie-title">${movie.title}</div>
+              <div class="movie-language">${movie.language}</div>
+              <div class="showtimes">${movie.showtimes.map(time => `<button class="showtime-btn" onclick="selectShowtime(${theater.id}, '${movie.title}', '${time}', ${movie.price})">${time}</button>`).join('')}</div>
+              <div class="movie-price">₹${movie.price} per ticket</div>
+            </div>
+          </div>
+        `).join('')}</div>
+      </div>
+    `).join('');
+  }
+
+  function selectShowtime(theaterId, movieTitle, showTime, price) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book tickets', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ theaterId, movieTitle, showTime, price }));
+    window.location.href = `/cinema/booking.html`;
+  }
+
+  document.getElementById('searchInput').addEventListener('input', renderTheaters);
+  document.getElementById('movieFilter').addEventListener('change', (e) => { currentFilter = e.target.value; renderTheaters(); });
+  
+  function updateUI() { const user = WeConnectAuth.getCurrentUser(); if (user) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = user.name || user.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block'; if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none'; if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block'; } }
+  window.logout = function() { WeConnectAuth.logout(); window.location.href = '/index.html'; };
+  updateUI();
+  renderTheaters();
+</script>
+</body>
+</html>

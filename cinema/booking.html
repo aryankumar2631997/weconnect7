@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Movie Ticket Booking | WeConnect Cinema</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .booking-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .booking-wrapper { max-width: 800px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; font-size: 14px; }
+    .back-link:hover { color: var(--text); }
+    .booking-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    
+    .movie-info-section { padding: 24px; border-bottom: 1px solid var(--border); display: flex; gap: 20px; flex-wrap: wrap; }
+    .movie-poster { width: 80px; height: 100px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .movie-details { flex: 1; }
+    .movie-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .movie-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 4px; }
+    .theater-name { font-size: 14px; font-weight: 600; margin-top: 8px; }
+    
+    .seat-section { padding: 24px; border-bottom: 1px solid var(--border); }
+    .screen { text-align: center; margin-bottom: 30px; }
+    .screen-text { display: inline-block; padding: 6px 20px; background: var(--bg-secondary); border-radius: 20px; font-size: 12px; color: var(--text-muted); letter-spacing: 2px; }
+    
+    .seat-map { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 24px; }
+    .seat-row { display: flex; gap: 8px; align-items: center; }
+    .row-label { width: 30px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+    .seat { width: 32px; height: 32px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+    .seat:hover { border-color: var(--blue); background: rgba(59,130,246,0.1); }
+    .seat.selected { background: var(--blue); border-color: var(--blue); color: white; }
+    .seat.booked { background: rgba(239,68,68,0.1); border-color: var(--rejected); color: var(--rejected); cursor: not-allowed; text-decoration: line-through; }
+    
+    .seat-legend { display: flex; justify-content: center; gap: 24px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .legend-box { width: 20px; height: 20px; border-radius: 6px; }
+    .legend-box.available { background: var(--bg-secondary); border: 1px solid var(--border); }
+    .legend-box.selected { background: var(--blue); }
+    .legend-box.booked { background: rgba(239,68,68,0.1); border: 1px solid var(--rejected); }
+    
+    .booking-summary { padding: 24px; background: var(--bg-secondary); }
+    .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 700; font-size: 18px; color: var(--blue); }
+    
+    .customer-form { padding: 24px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    
+    .btn-confirm { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 10px; }
+    .btn-confirm:hover { background: #333; transform: translateY(-2px); }
+    
+    @media (max-width: 768px) { .seat { width: 28px; height: 28px; font-size: 9px; } .seat-row { gap: 5px; } .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="booking-container">
+  <div class="booking-wrapper">
+    <a href="/cinema/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Movies</a>
+    <div id="bookingContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading booking details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  let bookingData = null;
+  let selectedSeats = [];
+  const pricePerSeat = 120;
+  
+  // Theater data mapping
+  const theaters = {
+    1: { name: "Raj Talkies", location: "Station Road, Lakhisarai" },
+    2: { name: "Mahadev Talkies", location: "Katoria Road, Lakhisarai" }
+  };
+  
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+  
+  function loadBooking() {
+    // First try to get data from sessionStorage
+    const tempData = sessionStorage.getItem('booking_temp');
+    if (tempData) {
+      bookingData = JSON.parse(tempData);
+    }
+    
+    // Also check URL parameters
+    const theaterId = getQueryParam('theater');
+    const movie = getQueryParam('movie');
+    const showtime = getQueryParam('time');
+    const price = getQueryParam('price');
+    
+    if (theaterId && movie && showtime) {
+      bookingData = {
+        theaterId: parseInt(theaterId),
+        movieTitle: movie,
+        showTime: showtime,
+        price: parseInt(price) || 120
+      };
+    }
+    
+    if (!bookingData) {
+      document.getElementById('bookingContent').innerHTML = `
+        <div class="booking-card"><div style="text-align:center;padding:60px;">
+          <i class="fas fa-exclamation-triangle" style="font-size:48px;margin-bottom:16px;color:var(--rejected);"></i>
+          <h3>No booking selected</h3><p>Please select a movie and showtime first.</p>
+          <a href="/cinema/index.html" class="btn btn-primary" style="margin-top:20px;">Browse Movies</a>
+        </div></div>`;
+      return;
+    }
+    
+    const theater = theaters[bookingData.theaterId] || { name: "Select Cinema", location: "Lakhisarai" };
+    
+    const html = `
+      <div class="booking-card">
+        <div class="movie-info-section">
+          <div class="movie-poster">🎬</div>
+          <div class="movie-details">
+            <div class="movie-title">${bookingData.movieTitle}</div>
+            <div class="movie-meta">⭐ 4.5 • 2h 30m • U/A</div>
+            <div class="movie-meta">🎬 ${bookingData.showTime}</div>
+            <div class="theater-name">🏥 ${theater.name}<br>📍 ${theater.location}</div>
+          </div>
+        </div>
+        
+        <div class="seat-section">
+          <div class="screen"><div class="screen-text">SCREEN</div></div>
+          <div class="seat-map" id="seatMap"></div>
+          <div class="seat-legend">
+            <div class="legend-item"><div class="legend-box available"></div><span>Available</span></div>
+            <div class="legend-item"><div class="legend-box selected"></div><span>Selected</span></div>
+            <div class="legend-item"><div class="legend-box booked"></div><span>Booked</span></div>
+          </div>
+        </div>
+        
+        <div class="booking-summary">
+          <div class="summary-row"><span>Ticket Price</span><span>₹${bookingData.price}</span></div>
+          <div class="summary-row"><span>Number of Seats</span><span id="seatCount">0</span></div>
+          <div class="total-row"><span>Total Amount</span><span id="totalAmount">₹0</span></div>
+        </div>
+        
+        <div class="customer-form">
+          <form id="bookingForm">
+            <div class="form-row">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
+              <div class="form-group"><label>WhatsApp Number *</label><input type="tel" id="phone" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Number of Tickets *</label><input type="number" id="ticketCount" value="1" min="1" max="6" readonly style="background:var(--bg-secondary);"></div>
+              <div class="form-group"><label>Payment Method</label><select id="payment"><option>Pay at Cinema</option><option>Online Payment</option></select></div>
+            </div>
+            <button type="submit" class="btn-confirm">✅ Confirm Booking</button>
+          </form>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('bookingContent').innerHTML = html;
+    generateSeatMap();
+    
+    // Pre-fill user data if logged in
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      if (document.getElementById('fullName')) document.getElementById('fullName').value = user.name || '';
+      if (document.getElementById('phone')) document.getElementById('phone').value = user.phone || '';
+    }
+    
+    document.getElementById('bookingForm').addEventListener('submit', submitBooking);
+  }
+  
+  function generateSeatMap() {
+    const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const bookedSeats = ['A5', 'A6', 'B3', 'C7', 'C8', 'D2', 'E9', 'F4'];
+    let html = '';
+    for (let row of rows) {
+      html += `<div class="seat-row"><div class="row-label">${row}</div>`;
+      for (let i = 1; i <= 10; i++) {
+        const seatId = `${row}${i}`;
+        let seatClass = 'seat';
+        if (bookedSeats.includes(seatId)) seatClass += ' booked';
+        html += `<div class="${seatClass}" data-seat="${seatId}" onclick="toggleSeat('${seatId}')">${i}</div>`;
+      }
+      html += `</div>`;
+    }
+    document.getElementById('seatMap').innerHTML = html;
+  }
+  
+  function toggleSeat(seatId) {
+    const seatElement = document.querySelector(`.seat[data-seat="${seatId}"]`);
+    if (seatElement.classList.contains('booked')) return;
+    const index = selectedSeats.indexOf(seatId);
+    if (index === -1) {
+      selectedSeats.push(seatId);
+      seatElement.classList.add('selected');
+    } else {
+      selectedSeats.splice(index, 1);
+      seatElement.classList.remove('selected');
+    }
+    updateSummary();
+  }
+  
+  function updateSummary() {
+    const count = selectedSeats.length;
+    const total = count * (bookingData?.price || 120);
+    document.getElementById('seatCount').textContent = count;
+    document.getElementById('totalAmount').textContent = `₹${total}`;
+    const ticketCountInput = document.getElementById('ticketCount');
+    if (ticketCountInput) ticketCountInput.value = count;
+  }
+  
+  function submitBooking(e) {
+    e.preventDefault();
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) {
+      WeConnect.showToast('Please login to book tickets', 'warning');
+      setTimeout(() => window.location.href = '/user/login.html', 1000);
+      return;
+    }
+    
+    if (selectedSeats.length === 0) {
+      WeConnect.showToast('Please select at least one seat', 'error');
+      return;
+    }
+    
+    const name = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    if (!name || !phone) {
+      WeConnect.showToast('Please fill your name and phone number', 'error');
+      return;
+    }
+    
+    const theater = theaters[bookingData.theaterId] || { name: "Cinema", location: "Lakhisarai" };
+    const total = selectedSeats.length * bookingData.price;
+    const bookingId = 'LC-' + Date.now();
+    
+    const booking = {
+      id: bookingId,
+      userId: user.id,
+      userPhone: user.phone,
+      userName: user.name || name,
+      serviceType: "Cinema",
+      serviceName: bookingData.movieTitle,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      formData: {
+        movie: bookingData.movieTitle,
+        theater: theater.name,
+        showTime: bookingData.showTime,
+        seats: selectedSeats.join(', '),
+        ticketCount: selectedSeats.length,
+        totalAmount: total,
+        customerName: name,
+        customerPhone: phone
+      }
+    };
+    
+    let bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
+    bookings.push(booking);
+    localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+    
+    sessionStorage.removeItem('booking_temp');
+    WeConnect.showToast(`✅ Tickets booked! ID: ${bookingId}`, 'success');
+    setTimeout(() => window.location.href = `/user/confirmation.html?id=${bookingId}`, 1500);
+  }
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block';
+      if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none';
+      if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.toggleSeat = toggleSeat;
+  window.logout = function() { WeConnectAuth.logout(); window.location.href = '/index.html'; };
+  updateUI();
+  loadBooking();
+</script>
+</body>
+</html>

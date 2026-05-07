@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Driver Details | WeConnect Transport</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .driver-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .driver-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .driver-avatar { width: 100px; height: 100px; background: var(--bg-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .driver-info { flex: 1; }
+    .driver-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .driver-vehicle { font-size: 16px; color: var(--blue); margin-bottom: 12px; }
+    .driver-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .vehicle-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+    .vehicle-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .vehicle-name { font-weight: 600; }
+    .vehicle-price { color: var(--blue); font-weight: 600; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; background: rgba(16,185,129,0.1); color: var(--confirmed); }
+    .reviews-list { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .review-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px; }
+    .review-stars { color: #F59E0B; font-size: 12px; margin-bottom: 8px; }
+    .review-text { font-size: 13px; color: var(--text-light); margin-bottom: 8px; }
+    .review-author { font-size: 11px; color: var(--text-muted); }
+    .btn-book { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+    .btn-book:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .driver-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } .vehicle-item { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/transport/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Transport</a>
+    <div id="driverContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading driver details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const driversDB = {
+    1: {
+      name: "Rajesh Kumar", vehicleType: "Car (Sedan)", location: "Station Road, Lakhisarai",
+      rating: 4.9, trips: 1250, experience: "8 years", licenseNumber: "BR-33-2020-0012345",
+      about: "Rajesh Kumar is a professional driver with 8 years of experience. He is known for his punctuality, safe driving, and friendly nature. He has completed over 1200 trips with 99% customer satisfaction.",
+      languages: ["Hindi", "English", "Maithili"],
+      vehicles: [
+        { name: "Sedan (4 Seater)", price: "₹12/km", ac: true },
+        { name: "SUV (7 Seater)", price: "₹15/km", ac: true }
+      ],
+      availability: "Mon-Sat, 6 AM - 10 PM",
+      documents: ["Driver's License", "Aadhar Card", "Vehicle Registration"],
+      reviews: [
+        { author: "Rahul Sharma", rating: 5, text: "Very professional driver. Reached on time and drove safely.", date: "2024-01-15" },
+        { author: "Priya Singh", rating: 5, text: "Excellent service! Highly recommended.", date: "2024-01-10" },
+        { author: "Amit Kumar", rating: 4, text: "Good experience. Will book again.", date: "2024-01-05" }
+      ]
+    },
+    2: {
+      name: "Manoj Singh", vehicleType: "Car (SUV)", location: "Main Bazaar, Lakhisarai",
+      rating: 4.8, trips: 980, experience: "12 years", licenseNumber: "BR-33-2015-0078912",
+      about: "Manoj Singh is an experienced driver with 12 years on the road. He specializes in outstation trips and knows all routes in Bihar, Jharkhand, and West Bengal.",
+      languages: ["Hindi", "English"],
+      vehicles: [
+        { name: "SUV (7 Seater)", price: "₹15/km", ac: true },
+        { name: "Innova (7 Seater)", price: "₹18/km", ac: true }
+      ],
+      availability: "24/7",
+      documents: ["Driver's License", "Aadhar Card", "PAN Card", "Vehicle Registration"],
+      reviews: [
+        { author: "Rajesh Sinha", rating: 5, text: "Great driver for long trips. Very knowledgeable about routes.", date: "2024-01-12" }
+      ]
+    },
+    3: {
+      name: "Rahul Kumar", vehicleType: "Bike", location: "Katoria Road, Lakhisarai",
+      rating: 4.7, trips: 2340, experience: "5 years", licenseNumber: "BR-33-2019-0034567",
+      about: "Rahul is the fastest and most reliable bike taxi driver in Lakhisarai. Perfect for quick city commutes.",
+      languages: ["Hindi"],
+      vehicles: [
+        { name: "Bike Taxi", price: "₹10/km", ac: false }
+      ],
+      availability: "Mon-Sat, 8 AM - 8 PM",
+      documents: ["Driver's License", "Aadhar Card"],
+      reviews: [
+        { author: "Neha Gupta", rating: 5, text: "Super fast service! Reached my destination in no time.", date: "2024-01-08" }
+      ]
+    },
+    4: {
+      name: "Vikash Thakur", vehicleType: "Car & Bike", location: "Station Road, Lakhisarai",
+      rating: 4.9, trips: 560, experience: "10 years", licenseNumber: "BR-33-2018-0098790",
+      about: "Vikash Thakur is a versatile driver offering both car and bike services. Known for his polite behavior and safe driving.",
+      languages: ["Hindi", "English"],
+      vehicles: [
+        { name: "Sedan (4 Seater)", price: "₹12/km", ac: true },
+        { name: "Bike Taxi", price: "₹10/km", ac: false }
+      ],
+      availability: "Mon-Sat, 7 AM - 9 PM",
+      documents: ["Driver's License", "Aadhar Card", "Vehicle Registration"],
+      reviews: [
+        { author: "Suresh Yadav", rating: 5, text: "Very polite and professional driver.", date: "2024-01-14" },
+        { author: "Anita Verma", rating: 5, text: "Excellent service! Highly recommended.", date: "2024-01-09" }
+      ]
+    }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadDriver() {
+    const id = getQueryParam('id');
+    if (!id || !driversDB[id]) { errorPage(); return; }
+    
+    const driver = driversDB[id];
+    const starsFull = Math.floor(driver.rating);
+    const starsHalf = driver.rating % 1 >= 0.5 ? '½' : '';
+    
+    const vehiclesHtml = driver.vehicles.map(v => `
+      <div class="vehicle-item">
+        <div>
+          <div class="vehicle-name">🚗 ${v.name}</div>
+          <div class="vehicle-price">💰 ${v.price}</div>
+        </div>
+        <span class="badge">${v.ac ? '✅ AC' : '❌ Non-AC'}</span>
+      </div>
+    `).join('');
+    
+    const languagesHtml = driver.languages.map(l => `<span class="badge" style="background:var(--bg);">${l}</span>`).join('');
+    const documentsHtml = driver.documents.map(d => `<span class="badge" style="background:var(--bg);">📄 ${d}</span>`).join('');
+    
+    const reviewsHtml = driver.reviews.map(r => `
+      <div class="review-item">
+        <div class="review-stars">${'★'.repeat(r.rating)}</div>
+        <div class="review-text">"${r.text}"</div>
+        <div class="review-author">— ${r.author} (${new Date(r.date).toLocaleDateString()})</div>
+      </div>
+    `).join('');
+    
+    const html = `
+      <div class="driver-card">
+        <div class="driver-header">
+          <div class="driver-avatar">👨‍✈️</div>
+          <div class="driver-info">
+            <div class="driver-name">${driver.name}</div>
+            <div class="driver-vehicle">🚗 ${driver.vehicleType}</div>
+            <div class="driver-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${driver.rating} (${driver.trips} trips)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Driver</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light); line-height: 1.6;">${driver.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-id-card"></i> Driver Information</div><div class="info-grid"><div class="info-item"><div class="info-label">Experience</div><div class="info-value">${driver.experience}</div></div><div class="info-item"><div class="info-label">Total Trips</div><div class="info-value">${driver.trips}</div></div><div class="info-item"><div class="info-label">Availability</div><div class="info-value">${driver.availability}</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-car"></i> Vehicles</div><div class="vehicle-list">${vehiclesHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-language"></i> Languages Known</div><div>${languagesHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-file-alt"></i> Documents Verified</div><div>${documentsHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-star"></i> Customer Reviews (${driver.reviews.length})</div><div class="reviews-list">${reviewsHtml}</div></div>
+        
+        <div style="padding: 20px 28px 28px;">
+          <button class="btn-book" onclick="bookDriver(${id}, '${driver.name}')">🚖 Hire This Driver →</button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('driverContent').innerHTML = html;
+  }
+  
+  function bookDriver(id, name) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to hire driver', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'transport', serviceType: 'driver', driverId: id, driverName: name }));
+    window.location.href = `/transport/booking.html?type=driver&id=${id}&name=${encodeURIComponent(name)}`;
+  }
+  
+  function errorPage() { document.getElementById('driverContent').innerHTML = `<div class="driver-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Driver Not Found</h3><a href="/transport/index.html" class="btn btn-primary">Back to Transport</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookDriver = bookDriver;
+  updateUI();
+  loadDriver();
+</script>
+</body>
+</html>

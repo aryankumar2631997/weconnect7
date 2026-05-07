@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Schools & Tuition | WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .school-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .school-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 32px; background: var(--bg-secondary); padding: 6px; border-radius: var(--radius-xl); flex-wrap: wrap; }
+    .tab-btn { padding: 12px 24px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-light); cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s; }
+    .tab-btn.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow-sm); }
+    
+    .schools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .school-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .school-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .school-image { height: 140px; background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); display: flex; align-items: center; justify-content: center; font-size: 56px; border-bottom: 1px solid var(--border); }
+    .school-info { padding: 20px; }
+    .school-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .school-location { font-size: 13px; color: var(--text-light); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .school-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .stars { color: #F59E0B; font-size: 12px; }
+    .school-fee { font-size: 14px; font-weight: 700; color: var(--blue); margin-top: 8px; }
+    .school-footer { padding: 16px 20px; background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .book-btn { padding: 8px 24px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .book-btn:hover { background: #333; transform: translateY(-2px); }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .tabs { justify-content: center; }
+      .schools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="school-container">
+  <div class="school-wrapper">
+    <div class="page-header">
+      <h1>📚 Schools & Tuition</h1>
+      <p>Find schools, tuition classes, and home tutors in Lakhisarai</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">20+</div><div class="stat-label-sm">Schools</div></div>
+      <div class="stat-item"><div class="stat-number-lg">30+</div><div class="stat-label-sm">Tutors</div></div>
+      <div class="stat-item"><div class="stat-number-lg">15+</div><div class="stat-label-sm">Tuition Centers</div></div>
+      <div class="stat-item"><div class="stat-number-lg">5+</div><div class="stat-label-sm">Subjects</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search by name, location, or subject..."></div>
+        <select id="priceFilter" class="filter-select"><option value="all">All Fees</option><option value="budget">Budget (Under ₹1000)</option><option value="mid">Mid (₹1000-3000)</option><option value="premium">Premium (₹3000+)</option></select>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="schools">🏫 Schools</button>
+      <button class="tab-btn" data-tab="tuition">📖 Tuition Centers</button>
+      <button class="tab-btn" data-tab="tutors">👩‍🏫 Private Tutors</button>
+    </div>
+    
+    <div id="schoolsGrid" class="schools-grid"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const schoolsData = {
+    schools: [
+      { id: 1, name: "St. Joseph's School", location: "Station Road, Lakhisarai", rating: 4.5, reviews: 234, fee: "₹25,000/year", board: "CBSE", classes: "Nursery - 12th", image: "🏫", type: "school" },
+      { id: 2, name: "Lakhisarai Public School", location: "Main Bazaar, Lakhisarai", rating: 4.3, reviews: 189, fee: "₹18,000/year", board: "BSEB", classes: "1st - 12th", image: "🏫", type: "school" },
+      { id: 3, name: "Kendriya Vidyalaya", location: "Katoria Road, Lakhisarai", rating: 4.7, reviews: 312, fee: "₹20,000/year", board: "CBSE", classes: "1st - 12th", image: "🏫", type: "school" },
+      { id: 4, name: "Little Flower School", location: "Shastri Nagar, Lakhisarai", rating: 4.4, reviews: 156, fee: "₹15,000/year", board: "ICSE", classes: "Nursery - 10th", image: "🏫", type: "school" }
+    ],
+    tuition: [
+      { id: 101, name: "Vikas Coaching Center", location: "Station Road, Lakhisarai", rating: 4.6, reviews: 234, fee: "₹1,500/month", subjects: "Maths, Science", classes: "9th-12th", image: "📖", type: "tuition" },
+      { id: 102, name: "Competitive Exam Hub", location: "Main Bazaar, Lakhisarai", rating: 4.8, reviews: 189, fee: "₹2,500/month", subjects: "Banking, SSC, Railway", classes: "All", image: "📖", type: "tuition" },
+      { id: 103, name: "Bright Future Tuition", location: "Katoria Road, Lakhisarai", rating: 4.4, reviews: 156, fee: "₹1,200/month", subjects: "English, Hindi, Social Studies", classes: "6th-10th", image: "📖", type: "tuition" }
+    ],
+    tutors: [
+      { id: 201, name: "Mrs. Priya Sharma", subject: "Mathematics", location: "Station Road", rating: 4.9, reviews: 234, fee: "₹500/hour", experience: "8 years", qualification: "M.Sc (Maths), B.Ed", image: "👩‍🏫", type: "tutor" },
+      { id: 202, name: "Mr. Rajiv Ranjan", subject: "Science", location: "Main Bazaar", rating: 4.8, reviews: 189, fee: "₹450/hour", experience: "10 years", qualification: "M.Sc (Physics), B.Ed", image: "👨‍🏫", type: "tutor" },
+      { id: 203, name: "Mrs. Neha Gupta", subject: "English", location: "Katoria Road", rating: 4.7, reviews: 156, fee: "₹400/hour", experience: "6 years", qualification: "MA English, B.Ed", image: "👩‍🏫", type: "tutor" },
+      { id: 204, name: "Mr. Suresh Singh", subject: "Hindi & Sanskrit", location: "Shastri Nagar", rating: 4.8, reviews: 143, fee: "₹350/hour", experience: "12 years", qualification: "MA Hindi, B.Ed", image: "👨‍🏫", type: "tutor" }
+    ]
+  };
+
+  let currentTab = 'schools';
+  let searchTerm = '';
+  let priceFilter = 'all';
+
+  function getStars(rating) { return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : ''); }
+
+  function renderSchools() {
+    const container = document.getElementById('schoolsGrid');
+    let items = schoolsData[currentTab];
+    
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm) || (item.subject && item.subject.toLowerCase().includes(searchTerm)));
+    
+    if (priceFilter === 'budget') items = items.filter(item => parseInt(item.fee) < 1000);
+    else if (priceFilter === 'mid') items = items.filter(item => parseInt(item.fee) >= 1000 && parseInt(item.fee) < 3000);
+    else if (priceFilter === 'premium') items = items.filter(item => parseInt(item.fee) >= 3000);
+    
+    if (items.length === 0) { container.innerHTML = '<div style="text-align:center;padding:60px;"><i class="fas fa-search" style="font-size:48px;opacity:0.5;"></i><h3>No results found</h3></div>'; return; }
+    
+    container.innerHTML = items.map(item => `
+      <div class="school-card">
+        <div class="school-image">${item.image}</div>
+        <div class="school-info">
+          <div class="school-name">${item.name}</div>
+          <div class="school-location"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>
+          <div class="school-rating"><span class="stars">${getStars(item.rating)}</span><span>(${item.reviews} reviews)</span></div>
+          <div class="school-fee">💰 ${item.fee}${item.board ? ` • ${item.board}` : ''}${item.subject ? ` • ${item.subject}` : ''}</div>
+        </div>
+        <div class="school-footer">
+          <button class="book-btn" onclick="bookService('${currentTab}', ${item.id}, '${item.name}', '${item.fee}')">Enquire Now →</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function bookService(type, id, name, fee) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to enquire', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'school', serviceType: type, id: id, name: name, fee: fee }));
+    window.location.href = `/school/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&fee=${fee}`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      renderSchools();
+    });
+  });
+  
+  document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderSchools(); });
+  document.getElementById('priceFilter').addEventListener('change', (e) => { priceFilter = e.target.value; renderSchools(); });
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block';
+      if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none';
+      if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookService = bookService;
+  updateUI();
+  renderSchools();
+</script>
+</body>
+</html>

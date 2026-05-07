@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Sign Up | WeConnect - Lakhisarai's Super App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .register-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px 60px;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+    }
+    .register-card {
+      max-width: 520px;
+      width: 100%;
+      background: var(--bg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .register-header {
+      padding: 32px 32px 0;
+      text-align: center;
+    }
+    .register-header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .register-header p {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    .register-form-container {
+      padding: 32px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--text);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
+    .input-icon {
+      position: relative;
+    }
+    .input-icon i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .input-icon input {
+      padding-left: 45px;
+    }
+    .register-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .register-btn:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+    .login-link {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    .login-link a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .terms {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 20px;
+    }
+    .terms a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .password-requirements {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+    .password-strength {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .strength-weak { background: #EF4444; width: 33%; }
+    .strength-medium { background: #F59E0B; width: 66%; }
+    .strength-strong { background: #10B981; width: 100%; }
+    @media (max-width: 480px) {
+      .register-card {
+        margin: 0 16px;
+      }
+      .register-header {
+        padding: 24px 24px 0;
+      }
+      .register-form-container {
+        padding: 24px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo">
+      <div class="logo-icon">🔗</div>
+      <div class="logo-text">We<span>Connect</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/index.html#services">Services</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <a href="/user/login.html" class="btn btn-outline">Login</a>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/login.html">Login</a>
+</div>
+
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Create Account ✨</h1>
+      <p>Join WeConnect to book all services in Lakhisarai</p>
+    </div>
+
+    <div class="register-form-container">
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <div class="input-icon">
+              <i class="fas fa-user"></i>
+              <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <div class="input-icon">
+              <i class="fas fa-phone"></i>
+              <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address *</label>
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Password *</label>
+            <div class="input-icon">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" placeholder="Create a password" required>
+            </div>
+            <div class="password-strength" id="passwordStrength">
+              <div class="password-strength-bar" id="strengthBar"></div>
+            </div>
+            <div class="password-requirements" id="passwordHint">
+              Use 6+ characters with letters & numbers
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirm Password *</label>
+            <div class="input-icon">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>City</label>
+          <div class="input-icon">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" id="city" value="Lakhisarai" placeholder="City">
+          </div>
+        </div>
+
+        <button type="submit" class="register-btn">Create Account →</button>
+
+        <div class="terms">
+          By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </div>
+
+        <div class="login-link">
+          Already have an account? <a href="/user/login.html">Sign in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">WeConnect</div>
+      <div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  // Password strength checker
+  const passwordInput = document.getElementById('password');
+  const strengthBar = document.getElementById('strengthBar');
+  const passwordHint = document.getElementById('passwordHint');
+
+  passwordInput.addEventListener('input', function() {
+    const password = this.value;
+    let strength = 0;
+    
+    if (password.length >= 6) strength++;
+    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    
+    strengthBar.className = 'password-strength-bar';
+    
+    if (strength === 0 || password.length === 0) {
+      strengthBar.style.width = '0%';
+      passwordHint.innerHTML = 'Use 6+ characters with letters & numbers';
+      passwordHint.style.color = 'var(--text-muted)';
+    } else if (strength <= 1) {
+      strengthBar.classList.add('strength-weak');
+      passwordHint.innerHTML = '⚠️ Weak password';
+      passwordHint.style.color = '#EF4444';
+    } else if (strength <= 2) {
+      strengthBar.classList.add('strength-medium');
+      passwordHint.innerHTML = '⚡ Medium password';
+      passwordHint.style.color = '#F59E0B';
+    } else {
+      strengthBar.classList.add('strength-strong');
+      passwordHint.innerHTML = '✅ Strong password';
+      passwordHint.style.color = '#10B981';
+    }
+  });
+
+  // Phone number validation
+  const phoneInput = document.getElementById('phone');
+  phoneInput.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+  });
+
+  // Form submission
+  document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const city = document.getElementById('city').value.trim() || 'Lakhisarai';
+    
+    if (!name || !phone || !email || !password) {
+      WeConnect.showToast('Please fill all required fields', 'error');
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      WeConnect.showToast('Passwords do not match', 'error');
+      return;
+    }
+    
+    if (password.length < 6) {
+      WeConnect.showToast('Password must be at least 6 characters', 'error');
+      return;
+    }
+    
+    if (!/^[0-9]{10}$/.test(phone)) {
+      WeConnect.showToast('Please enter a valid 10-digit phone number', 'error');
+      return;
+    }
+    
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      WeConnect.showToast('Please enter a valid email address', 'error');
+      return;
+    }
+    
+    const result = WeConnectAuth.register({
+      name: name,
+      phone: phone,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      city: city
+    });
+    
+    if (result.success) {
+      WeConnect.showToast(result.message, 'success');
+      setTimeout(() => {
+        window.location.href = '/user/login.html';
+      }, 2000);
+    } else {
+      WeConnect.showToast(result.message, 'error');
+    }
+  });
+
+  // Enter key handlers
+  const inputs = ['fullName', 'phone', 'email', 'password', 'confirmPassword'];
+  inputs.forEach(id => {
+    document.getElementById(id).addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('registerForm').dispatchEvent(new Event('submit'));
+      }
+    });
+  });
+</script>
+</body>
+</html>

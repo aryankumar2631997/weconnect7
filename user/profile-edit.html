@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Edit Profile | WeConnect - Lakhisarai's Super App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .edit-container {
+      min-height: 100vh;
+      padding: 100px 20px 60px;
+      background: var(--bg-secondary);
+    }
+    .edit-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* Sidebar */
+    .edit-sidebar {
+      background: var(--bg);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+    .edit-avatar {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .avatar-img {
+      width: 100px;
+      height: 100px;
+      background: var(--text);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 40px;
+      color: white;
+    }
+    .avatar-img i {
+      font-size: 50px;
+    }
+    .edit-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .edit-email {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .edit-menu {
+      padding: 10px 0;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .menu-item i {
+      width: 20px;
+      font-size: 16px;
+    }
+    .menu-item:hover {
+      background: var(--bg-secondary);
+      color: var(--text);
+    }
+    .menu-item.active {
+      background: var(--bg-secondary);
+      color: var(--text);
+      border-left-color: var(--text);
+      font-weight: 500;
+    }
+    /* Main Content */
+    .edit-main {
+      background: var(--bg);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .edit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .edit-header h2 {
+      font-size: 24px;
+      margin-bottom: 0;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--text);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
+    .input-icon {
+      position: relative;
+    }
+    .input-icon i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .input-icon input,
+    .input-icon select,
+    .input-icon textarea {
+      padding-left: 45px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .save-btn {
+      padding: 12px 28px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .save-btn:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+    .cancel-btn {
+      padding: 12px 28px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-light);
+    }
+    .cancel-btn:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+    @media (max-width: 768px) {
+      .edit-grid {
+        grid-template-columns: 1fr;
+      }
+      .edit-sidebar {
+        position: static;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .edit-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      .form-actions {
+        flex-direction: column;
+      }
+      .save-btn, .cancel-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo">
+      <div class="logo-icon">🔗</div>
+      <div class="logo-text">We<span>Connect</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/index.html#services">Services</a></li>
+      <li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span>
+      <button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button>
+      <button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a>
+  <a href="/user/login.html" id="mobile-login">Login</a>
+  <a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a>
+</div>
+
+<div class="edit-container">
+  <div class="edit-grid">
+    <!-- Sidebar -->
+    <div class="edit-sidebar">
+      <div class="edit-avatar">
+        <div class="avatar-img">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="edit-name" id="sidebarName">Loading...</div>
+        <div class="edit-email" id="sidebarEmail">Loading...</div>
+      </div>
+      <div class="edit-menu">
+        <a href="/user/profile.html" class="menu-item">
+          <i class="fas fa-user"></i> My Profile
+        </a>
+        <a href="/user/profile-edit.html" class="menu-item active">
+          <i class="fas fa-edit"></i> Edit Profile
+        </a>
+        <a href="/user/my-orders.html" class="menu-item">
+          <i class="fas fa-shopping-bag"></i> My Orders
+        </a>
+        <a href="#" class="menu-item" onclick="changePassword()">
+          <i class="fas fa-key"></i> Change Password
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="edit-main">
+      <div class="edit-header">
+        <h2>Edit Profile</h2>
+        <a href="/user/profile.html" class="cancel-btn">Cancel</a>
+      </div>
+
+      <form id="editProfileForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <div class="input-icon">
+              <i class="fas fa-user"></i>
+              <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <div class="input-icon">
+              <i class="fas fa-phone"></i>
+              <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" readonly disabled style="background: var(--bg-secondary); cursor: not-allowed;">
+            </div>
+            <small style="color: var(--text-muted); font-size: 11px;">Phone number cannot be changed</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address *</label>
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <div class="input-icon">
+              <i class="fas fa-city"></i>
+              <input type="text" id="city" placeholder="City">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Pincode</label>
+            <div class="input-icon">
+              <i class="fas fa-map-pin"></i>
+              <input type="text" id="pincode" placeholder="Pincode" maxlength="6">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Full Address</label>
+          <div class="input-icon">
+            <i class="fas fa-map-marker-alt"></i>
+            <textarea id="address" rows="3" placeholder="Your complete address"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" onclick="window.location.href='/user/profile.html'">Cancel</button>
+          <button type="submit" class="save-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">WeConnect</div>
+      <div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  // Check authentication
+  if (!WeConnectAuth.isLoggedIn()) {
+    sessionStorage.setItem('weconnect_redirect_after_login', window.location.pathname);
+    window.location.href = '/user/login.html';
+  }
+
+  // Load user data
+  function loadUserData() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) return;
+    
+    const users = WeConnectAuth.getUsers();
+    const fullUser = users.find(u => u.id === user.id);
+    
+    const name = fullUser?.name || user.name || user.phone;
+    const email = fullUser?.email || user.email || '';
+    const phone = user.phone;
+    const city = fullUser?.city || 'Lakhisarai';
+    const pincode = fullUser?.pincode || '';
+    const address = fullUser?.address || '';
+    
+    document.getElementById('sidebarName').textContent = name;
+    document.getElementById('sidebarEmail').textContent = email;
+    document.getElementById('fullName').value = name;
+    document.getElementById('phone').value = phone;
+    document.getElementById('email').value = email;
+    document.getElementById('city').value = city;
+    document.getElementById('pincode').value = pincode;
+    document.getElementById('address').value = address;
+  }
+
+  // Save profile changes
+  document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const pincode = document.getElementById('pincode').value.trim();
+    const address = document.getElementById('address').value.trim();
+    
+    if (!name || !email) {
+      WeConnect.showToast('Please fill all required fields', 'error');
+      return;
+    }
+    
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      WeConnect.showToast('Please enter a valid email address', 'error');
+      return;
+    }
+    
+    const user = WeConnectAuth.getCurrentUser();
+    const users = WeConnectAuth.getUsers();
+    const index = users.findIndex(u => u.id === user.id);
+    
+    if (index !== -1) {
+      users[index].name = name;
+      users[index].email = email;
+      users[index].city = city || 'Lakhisarai';
+      users[index].pincode = pincode;
+      users[index].address = address;
+      
+      WeConnectAuth.saveUsers(users);
+      
+      // Update session
+      const session = WeConnectAuth.getCurrentUser();
+      session.name = name;
+      session.email = email;
+      sessionStorage.setItem('weconnect_current_user', JSON.stringify(session));
+      
+      WeConnect.showToast('Profile updated successfully!', 'success');
+      setTimeout(() => {
+        window.location.href = '/user/profile.html';
+      }, 1500);
+    }
+  });
+
+  function changePassword() {
+    const newPassword = prompt('Enter new password (min 6 characters):');
+    if (newPassword && newPassword.length >= 6) {
+      const user = WeConnectAuth.getCurrentUser();
+      const users = WeConnectAuth.getUsers();
+      const index = users.findIndex(u => u.id === user.id);
+      if (index !== -1) {
+        users[index].password = newPassword;
+        WeConnectAuth.saveUsers(users);
+        WeConnect.showToast('Password changed successfully!', 'success');
+      }
+    } else if (newPassword) {
+      WeConnect.showToast('Password must be at least 6 characters', 'error');
+    }
+  }
+
+  // Initialize
+  loadUserData();
+  
+  // Update UI based on auth state
+  const user = WeConnectAuth.getCurrentUser();
+  if (user) {
+    document.getElementById('login-nav-btn').style.display = 'none';
+    document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+    document.getElementById('user-name').style.display = 'inline-block';
+    document.getElementById('user-name').textContent = user.name || user.phone;
+    document.getElementById('my-orders-link').style.display = 'inline-block';
+    document.getElementById('mobile-my-orders').style.display = 'block';
+    document.getElementById('mobile-login').style.display = 'none';
+    document.getElementById('mobile-logout').style.display = 'block';
+  }
+  
+  window.logout = function() {
+    WeConnectAuth.logout();
+    window.location.href = '/index.html';
+  };
+</script>
+</body>
+</html>

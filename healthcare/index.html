@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Healthcare | Doctors & Hospitals - WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+      padding: 100px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-bar {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg {
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .stat-label-sm {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .search-section {
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .search-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .search-input-wrapper {
+      flex: 2;
+      position: relative;
+    }
+    .search-input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .search-input-wrapper input {
+      width: 100%;
+      padding: 14px 16px 14px 45px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+    }
+    .filter-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-select {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .modern-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      background: var(--bg-secondary);
+      padding: 6px;
+      border-radius: var(--radius-xl);
+      width: fit-content;
+    }
+    .modern-tab {
+      padding: 12px 32px;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      border-radius: var(--radius-lg);
+      transition: all 0.2s;
+    }
+    .modern-tab.active {
+      background: var(--bg);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+    .providers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .provider-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .provider-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+    .card-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(59,130,246,0.1);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .card-location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+    .card-rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .stars {
+      color: #F59E0B;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+    .reviews {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .card-tag {
+      padding: 4px 10px;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+    .card-tag-emergency {
+      background: rgba(239,68,68,0.1);
+      color: #EF4444;
+    }
+    .card-footer {
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-price {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .card-price small {
+      font-size: 11px;
+      font-weight: normal;
+      color: var(--text-muted);
+    }
+    .book-btn {
+      padding: 10px 24px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .book-btn:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 40px;
+    }
+    .page-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .page-btn.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+    @media (max-width: 768px) {
+      .providers-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats-bar {
+        justify-content: center;
+      }
+      .stat-item {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 10px 20px;
+      }
+      .modern-tabs {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo">
+      <div class="logo-icon">🔗</div>
+      <div class="logo-text">We<span>Connect</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/index.html#services">Services</a></li>
+      <li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span>
+      <button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button>
+      <button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a>
+  <a href="/user/login.html" id="mobile-login">Login</a>
+  <a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="container">
+    <div class="section-tag">Healthcare</div>
+    <h1 class="section-title">Find the Best <span class="gradient-text">Healthcare</span><br>in Lakhisarai</h1>
+    <p class="section-description" style="margin-left: 0;">Book appointments with trusted hospitals, doctors, and clinics. 24/7 emergency services available.</p>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-number-lg">22</div><div class="stat-label-sm">Hospitals</div></div>
+    <div class="stat-item"><div class="stat-number-lg">24</div><div class="stat-label-sm">Doctors</div></div>
+    <div class="stat-item"><div class="stat-number-lg">20</div><div class="stat-label-sm">Clinics</div></div>
+    <div class="stat-item"><div class="stat-number-lg">24/7</div><div class="stat-label-sm">Emergency Care</div></div>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="search-section">
+    <div class="search-row">
+      <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search by name, location, specialty...">
+      </div>
+      <div class="filter-group">
+        <select id="priceFilter" class="filter-select"><option value="all">All Prices</option><option value="low">Under ₹500</option><option value="medium">₹500 - ₹1000</option><option value="high">Above ₹1000</option></select>
+        <select id="ratingFilter" class="filter-select"><option value="all">All Ratings</option><option value="4">4★ & above</option><option value="3">3★ & above</option></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Tabs -->
+  <div class="modern-tabs">
+    <button class="modern-tab active" data-tab="hospitals">🏥 Hospitals (22)</button>
+    <button class="modern-tab" data-tab="doctors">👨‍⚕️ Doctors (24)</button>
+    <button class="modern-tab" data-tab="emergency">🚑 Emergency</button>
+  </div>
+
+  <!-- Results Grid -->
+  <div id="providersGrid" class="providers-grid"></div>
+  <div id="pagination" class="pagination"></div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">WeConnect</div>
+      <div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  // Healthcare Data
+  const hospitals = [
+    { id: 1, name: "Sadar Hospital Lakhisarai", location: "Station Road", rating: 4.2, reviews: 345, emergency: true, price: "Free", departments: 8, type: "Government", phone: "06246-XXXXXX" },
+    { id: 2, name: "City Care Multi-Specialty", location: "Main Bazaar", rating: 4.8, reviews: 892, emergency: true, price: "₹300-800", departments: 12, type: "Private", phone: "+919876543211" },
+    { id: 3, name: "Lakhisarai Nursing Home", location: "Katoria Road", rating: 4.5, reviews: 567, emergency: true, price: "₹200-600", departments: 6, type: "Private", phone: "+919876543212" },
+    { id: 4, name: "Lifeline Hospital", location: "Shastri Nagar", rating: 4.4, reviews: 234, emergency: true, price: "₹300-700", departments: 7, type: "Private", phone: "+919876543213" },
+    { id: 5, name: "Sanjeevani Medical Centre", location: "Gandhi Chowk", rating: 4.6, reviews: 456, emergency: true, price: "₹400-900", departments: 9, type: "Private", phone: "+919876543214" },
+    { id: 6, name: "Arogya Hospital", location: "Station Road", rating: 4.3, reviews: 198, emergency: true, price: "₹250-550", departments: 5, type: "Private", phone: "+919876543215" },
+    { id: 7, name: "Divya Hospital", location: "Main Bazaar", rating: 4.5, reviews: 312, emergency: true, price: "₹350-750", departments: 7, type: "Private", phone: "+919876543216" },
+    { id: 8, name: "Shree Ram Hospital", location: "Katoria Road", rating: 4.2, reviews: 187, emergency: true, price: "₹200-500", departments: 5, type: "Private", phone: "+919876543217" },
+    { id: 9, name: "Mahavir Medical", location: "Shastri Nagar", rating: 4.7, reviews: 423, emergency: true, price: "₹400-850", departments: 10, type: "Private", phone: "+919876543218" },
+    { id: 10, name: "Navjeevan Hospital", location: "Gandhi Chowk", rating: 4.4, reviews: 278, emergency: true, price: "₹300-650", departments: 6, type: "Private", phone: "+919876543219" },
+    { id: 11, name: "Healthcare Center 11", location: "Station Road", rating: 4.1, reviews: 145, emergency: true, price: "₹200-500", departments: 4, type: "Clinic", phone: "+919876543220" },
+    { id: 12, name: "Healthcare Center 12", location: "Main Bazaar", rating: 4.3, reviews: 189, emergency: true, price: "₹300-700", departments: 5, type: "Clinic", phone: "+919876543221" },
+    { id: 13, name: "Healthcare Center 13", location: "Katoria Road", rating: 4.0, reviews: 112, emergency: false, price: "₹200-400", departments: 3, type: "Clinic", phone: "+919876543222" },
+    { id: 14, name: "Healthcare Center 14", location: "Shastri Nagar", rating: 4.2, reviews: 156, emergency: true, price: "₹250-550", departments: 4, type: "Clinic", phone: "+919876543223" },
+    { id: 15, name: "Healthcare Center 15", location: "Gandhi Chowk", rating: 4.4, reviews: 201, emergency: true, price: "₹350-750", departments: 6, type: "Clinic", phone: "+919876543224" }
+  ];
+
+  const doctors = [
+    { id: 1, name: "Dr. Rajesh Kumar", specialty: "General Physician", hospital: "Sadar Hospital", location: "Station Road", rating: 4.9, reviews: 1245, fee: 500, experience: "15+ years", availability: "Mon-Sat" },
+    { id: 2, name: "Dr. Priya Sinha", specialty: "Gynecologist", hospital: "City Care Hospital", location: "Main Bazaar", rating: 4.8, reviews: 982, fee: 600, experience: "12+ years", availability: "Mon-Sat" },
+    { id: 3, name: "Dr. Suresh Prasad", specialty: "Pediatrician", hospital: "Lakhisarai Nursing Home", location: "Katoria Road", rating: 4.6, reviews: 756, fee: 400, experience: "10+ years", availability: "Mon-Fri" },
+    { id: 4, name: "Dr. Anita Verma", specialty: "Dermatologist", hospital: "City Care Hospital", location: "Main Bazaar", rating: 4.9, reviews: 432, fee: 700, experience: "8+ years", availability: "Tue-Sat" },
+    { id: 5, name: "Dr. Manoj Singh", specialty: "Cardiologist", hospital: "City Care Hospital", location: "Main Bazaar", rating: 4.9, reviews: 654, fee: 1000, experience: "18+ years", availability: "Mon-Sat" },
+    { id: 6, name: "Dr. Vikash Thakur", specialty: "Orthopedic", hospital: "Sadar Hospital", location: "Station Road", rating: 4.7, reviews: 543, fee: 600, experience: "14+ years", availability: "Mon-Sat" },
+    { id: 7, name: "Dr. Neha Gupta", specialty: "Eye Specialist", hospital: "Vision Eye Care", location: "Gandhi Chowk", rating: 4.8, reviews: 321, fee: 500, experience: "9+ years", availability: "Mon-Sat" },
+    { id: 8, name: "Dr. Ravi Shankar", specialty: "ENT Specialist", hospital: "Shankar ENT Clinic", location: "Shastri Nagar", rating: 4.7, reviews: 298, fee: 500, experience: "11+ years", availability: "Mon-Sat" },
+    { id: 9, name: "Dr. Sunita Kumari", specialty: "Pediatrician", hospital: "Lifeline Hospital", location: "Shastri Nagar", rating: 4.5, reviews: 234, fee: 450, experience: "7+ years", availability: "Mon-Wed-Fri" },
+    { id: 10, name: "Dr. Alok Ranjan", specialty: "Neurologist", hospital: "Sanjeevani Medical", location: "Gandhi Chowk", rating: 4.8, reviews: 187, fee: 800, experience: "13+ years", availability: "Tue-Thu-Sat" }
+  ];
+
+  let currentTab = 'hospitals';
+  let currentPage = 1;
+  let filteredData = [];
+  const itemsPerPage = 9;
+
+  function getCurrentData() { 
+    if (currentTab === 'hospitals') return hospitals;
+    if (currentTab === 'doctors') return doctors;
+    return []; // emergency tab handled separately
+  }
+
+  function filterData() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const priceFilter = document.getElementById('priceFilter').value;
+    const ratingFilter = document.getElementById('ratingFilter').value;
+    let data = getCurrentData();
+    
+    filteredData = data.filter(item => {
+      let match = item.name.toLowerCase().includes(searchTerm) || 
+                 (item.location && item.location.toLowerCase().includes(searchTerm)) ||
+                 (item.specialty && item.specialty.toLowerCase().includes(searchTerm));
+      if (priceFilter !== 'all' && item.fee) {
+        if (priceFilter === 'low' && item.fee >= 500) match = false;
+        else if (priceFilter === 'medium' && (item.fee < 500 || item.fee > 1000)) match = false;
+        else if (priceFilter === 'high' && item.fee <= 1000) match = false;
+      }
+      if (priceFilter !== 'all' && item.price && typeof item.price === 'string') {
+        if (priceFilter === 'low' && !item.price.match(/[1-4]00/)) match = false;
+        else if (priceFilter === 'medium' && !item.price.match(/[5-8]00/)) match = false;
+      }
+      if (ratingFilter !== 'all' && item.rating) match = match && parseFloat(item.rating) >= parseFloat(ratingFilter);
+      return match;
+    });
+    currentPage = 1;
+    renderGrid();
+    renderPagination();
+  }
+
+  function renderGrid() {
+    if (currentTab === 'emergency') {
+      document.getElementById('providersGrid').innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+          <i class="fas fa-ambulance" style="font-size: 48px; margin-bottom: 16px; color: #EF4444;"></i>
+          <h3>Emergency Services</h3>
+          <p style="color: var(--text-light); margin-bottom: 24px;">24/7 Emergency care, Ambulance services, and Lab tests</p>
+          <a href="/healthcare/emergency.html" class="btn btn-primary">Go to Emergency Services →</a>
+        </div>
+      `;
+      return;
+    }
+    
+    const start = (currentPage - 1) * itemsPerPage;
+    const pageData = filteredData.slice(start, start + itemsPerPage);
+    const grid = document.getElementById('providersGrid');
+    
+    if (pageData.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px;"></i><h3>No results found</h3><p>Try adjusting your search or filters</p></div>';
+      return;
+    }
+    
+    if (currentTab === 'hospitals') {
+      grid.innerHTML = pageData.map(h => `
+        <div class="provider-card" onclick="window.location.href='/healthcare/hospital-details.html?id=${h.id}'">
+          <div class="card-header">
+            <div class="card-icon">🏥</div>
+            <div class="card-title">${h.name}</div>
+            <div class="card-location"><i class="fas fa-map-marker-alt"></i> ${h.location}</div>
+            <div class="card-rating"><span class="stars">${'★'.repeat(Math.floor(h.rating))}${h.rating%1>=0.5?'½':''}</span><span class="reviews">(${h.reviews})</span></div>
+            <div class="card-tags"><span class="card-tag card-tag-emergency">🚨 ${h.emergency ? '24/7 Emergency' : 'Emergency Available'}</span><span class="card-tag">🏥 ${h.departments} Departments</span><span class="card-tag">${h.type}</span></div>
+          </div>
+          <div class="card-footer"><div class="card-price">${h.price}<small>/consult</small></div><button class="book-btn" onclick="event.stopPropagation();bookService('hospital',${h.id})">Book →</button></div>
+        </div>
+      `).join('');
+    } else if (currentTab === 'doctors') {
+      grid.innerHTML = pageData.map(d => `
+        <div class="provider-card" onclick="window.location.href='/healthcare/doctor-details.html?id=${d.id}'">
+          <div class="card-header">
+            <div class="card-icon">👨‍⚕️</div>
+            <div class="card-title">${d.name}</div>
+            <div class="card-location"><i class="fas fa-stethoscope"></i> ${d.specialty} • ${d.location}</div>
+            <div class="card-rating"><span class="stars">${'★'.repeat(Math.floor(d.rating))}${d.rating%1>=0.5?'½':''}</span><span class="reviews">(${d.reviews})</span></div>
+            <div class="card-tags"><span class="card-tag">📅 ${d.experience}</span><span class="card-tag">✅ ${d.availability}</span><span class="card-tag">🏥 ${d.hospital}</span></div>
+          </div>
+          <div class="card-footer"><div class="card-price">₹${d.fee}<small>/consult</small></div><button class="book-btn" onclick="event.stopPropagation();bookService('doctor',${d.id})">Book →</button></div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function bookService(type, id) {
+    if (!WeConnectAuth.isLoggedIn()) {
+      sessionStorage.setItem('weconnect_redirect_after_login', window.location.pathname);
+      WeConnect.showToast('Please login to book', 'warning');
+      window.location.href = '/user/login.html';
+      return;
+    }
+    if (type === 'hospital') window.location.href = `/healthcare/hospital-details.html?id=${id}`;
+    else window.location.href = `/healthcare/doctor-details.html?id=${id}`;
+  }
+
+  function renderPagination() {
+    if (currentTab === 'emergency') { document.getElementById('pagination').innerHTML = ''; return; }
+    let totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+    let html = `<button class="page-btn" onclick="changePage(${currentPage-1})" ${currentPage===1?'disabled style="opacity:0.5"':''}>‹</button>`;
+    for (let i = 1; i <= Math.min(totalPages, 5); i++) html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
+    if (totalPages > 5) html += `<span style="padding:0 8px;">...</span><button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+    html += `<button class="page-btn" onclick="changePage(${currentPage+1})" ${currentPage===totalPages?'disabled style="opacity:0.5"':''}>›</button>`;
+    document.getElementById('pagination').innerHTML = html;
+  }
+
+  function changePage(page) { currentPage = page; renderGrid(); renderPagination(); }
+
+  document.querySelectorAll('.modern-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.modern-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      if (currentTab !== 'emergency') filterData();
+      else { renderGrid(); document.getElementById('pagination').innerHTML = ''; }
+    });
+  });
+
+  document.getElementById('searchInput').addEventListener('input', filterData);
+  document.getElementById('priceFilter').addEventListener('change', filterData);
+  document.getElementById('ratingFilter').addEventListener('change', filterData);
+  
+  filterData();
+
+  // Auth UI
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      document.getElementById('mobile-my-orders').style.display = 'block';
+      document.getElementById('mobile-login').style.display = 'none';
+      document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { WeConnectAuth.logout(); window.location.href = '/index.html'; };
+  updateUI();
+</script>
+</body>
+</html>

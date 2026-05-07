@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Tutor Details | WeConnect Education</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .tutor-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .tutor-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .tutor-avatar { width: 100px; height: 100px; background: var(--bg-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .tutor-info { flex: 1; }
+    .tutor-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .tutor-subject { font-size: 16px; color: var(--blue); margin-bottom: 12px; }
+    .tutor-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .subjects-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .subject-tag { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 30px; font-size: 13px; }
+    .availability-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+    .availability-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .day { font-weight: 600; }
+    .time { color: var(--blue); }
+    .reviews-list { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .review-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px; }
+    .review-stars { color: #F59E0B; font-size: 12px; margin-bottom: 8px; }
+    .review-text { font-size: 13px; color: var(--text-light); margin-bottom: 8px; }
+    .review-author { font-size: 11px; color: var(--text-muted); }
+    .btn-enquire { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+    .btn-enquire:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .tutor-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } .availability-item { flex-direction: column; text-align: center; gap: 5px; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/school/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Schools</a>
+    <div id="tutorContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading tutor details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const tutorsDB = {
+    201: { 
+      name: "Mrs. Priya Sharma", subject: "Mathematics", location: "Station Road, Lakhisarai", 
+      rating: 4.9, reviews: 234, fee: "₹500/hour", experience: "8 years", 
+      qualification: "M.Sc (Mathematics), B.Ed", about: "Mrs. Priya Sharma is a dedicated mathematics teacher with 8 years of experience. She specializes in making math easy and fun for students. Her teaching methodology focuses on conceptual clarity and practical problem-solving.",
+      education: "M.Sc (Mathematics) - Patna University, B.Ed - Nalanda Open University",
+      subjects: ["Algebra", "Geometry", "Calculus", "Trigonometry", "Statistics"],
+      availability: [
+        { day: "Monday", time: "4:00 PM - 6:00 PM" },
+        { day: "Tuesday", time: "4:00 PM - 6:00 PM" },
+        { day: "Wednesday", time: "4:00 PM - 6:00 PM" },
+        { day: "Thursday", time: "4:00 PM - 6:00 PM" },
+        { day: "Friday", time: "4:00 PM - 6:00 PM" },
+        { day: "Saturday", time: "10:00 AM - 1:00 PM" }
+      ],
+      reviewsList: [
+        { author: "Rahul Kumar", rating: 5, text: "Excellent teacher! My daughter's math marks improved significantly.", date: "2024-01-15" },
+        { author: "Neha Singh", rating: 5, text: "Very patient and explains concepts clearly. Highly recommended.", date: "2024-01-10" }
+      ]
+    },
+    202: {
+      name: "Mr. Rajiv Ranjan", subject: "Science", location: "Main Bazaar, Lakhisarai",
+      rating: 4.8, reviews: 189, fee: "₹450/hour", experience: "10 years",
+      qualification: "M.Sc (Physics), B.Ed", about: "Mr. Rajiv Ranjan is an experienced science teacher who makes physics and chemistry interesting. He has helped hundreds of students excel in their board exams.",
+      education: "M.Sc (Physics) - Patna University, B.Ed - Magadh University",
+      subjects: ["Physics", "Chemistry", "Biology"],
+      availability: [
+        { day: "Monday", time: "5:00 PM - 7:00 PM" },
+        { day: "Wednesday", time: "5:00 PM - 7:00 PM" },
+        { day: "Friday", time: "5:00 PM - 7:00 PM" },
+        { day: "Saturday", time: "9:00 AM - 12:00 PM" }
+      ],
+      reviewsList: [
+        { author: "Amit Singh", rating: 5, text: "Best science teacher in Lakhisarai. His practical approach is amazing.", date: "2024-01-12" }
+      ]
+    },
+    203: {
+      name: "Mrs. Neha Gupta", subject: "English", location: "Katoria Road, Lakhisarai",
+      rating: 4.7, reviews: 156, fee: "₹400/hour", experience: "6 years",
+      qualification: "MA English, B.Ed", about: "Mrs. Neha Gupta specializes in English literature and grammar. She helps students improve their reading, writing, and speaking skills.",
+      education: "MA English - Patna University, B.Ed - Magadh University",
+      subjects: ["English Grammar", "Literature", "Spoken English", "Writing Skills"],
+      availability: [
+        { day: "Tuesday", time: "4:00 PM - 6:00 PM" },
+        { day: "Thursday", time: "4:00 PM - 6:00 PM" },
+        { day: "Saturday", time: "10:00 AM - 1:00 PM" }
+      ],
+      reviewsList: []
+    },
+    204: {
+      name: "Mr. Suresh Singh", subject: "Hindi & Sanskrit", location: "Shastri Nagar, Lakhisarai",
+      rating: 4.8, reviews: 143, fee: "₹350/hour", experience: "12 years",
+      qualification: "MA Hindi, MA Sanskrit, B.Ed", about: "Mr. Suresh Singh is a highly experienced language teacher specializing in Hindi and Sanskrit. He has taught hundreds of students over 12 years.",
+      education: "MA Hindi, MA Sanskrit - Patna University, B.Ed - Nalanda Open University",
+      subjects: ["Hindi Grammar", "Hindi Literature", "Sanskrit", "Vyakarana"],
+      availability: [
+        { day: "Monday", time: "5:00 PM - 7:00 PM" },
+        { day: "Wednesday", time: "5:00 PM - 7:00 PM" },
+        { day: "Friday", time: "5:00 PM - 7:00 PM" }
+      ],
+      reviewsList: []
+    }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadTutor() {
+    const id = getQueryParam('id');
+    if (!id || !tutorsDB[id]) { errorPage(); return; }
+    
+    const tutor = tutorsDB[id];
+    const starsFull = Math.floor(tutor.rating);
+    const starsHalf = tutor.rating % 1 >= 0.5 ? '½' : '';
+    
+    const subjectsHtml = tutor.subjects.map(s => `<span class="subject-tag">📖 ${s}</span>`).join('');
+    const availabilityHtml = tutor.availability.map(a => `<div class="availability-item"><span class="day">${a.day}</span><span class="time">🕐 ${a.time}</span></div>`).join('');
+    
+    let reviewsHtml = '';
+    if (tutor.reviewsList && tutor.reviewsList.length > 0) {
+      reviewsHtml = `<div class="reviews-list">${tutor.reviewsList.map(r => `
+        <div class="review-item">
+          <div class="review-stars">${'★'.repeat(r.rating)}</div>
+          <div class="review-text">"${r.text}"</div>
+          <div class="review-author">— ${r.author} (${new Date(r.date).toLocaleDateString()})</div>
+        </div>
+      `).join('')}</div>`;
+    } else {
+      reviewsHtml = '<p style="color: var(--text-muted);">No reviews yet. Be the first to review!</p>';
+    }
+    
+    const html = `
+      <div class="tutor-card">
+        <div class="tutor-header">
+          <div class="tutor-avatar">👩‍🏫</div>
+          <div class="tutor-info">
+            <div class="tutor-name">${tutor.name}</div>
+            <div class="tutor-subject">📖 ${tutor.subject} • ${tutor.experience} experience</div>
+            <div class="tutor-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${tutor.rating} (${tutor.reviews} reviews)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Tutor</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-user-graduate"></i> About</div><p style="color: var(--text-light); line-height: 1.6;">${tutor.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-graduation-cap"></i> Qualifications</div><div class="info-grid"><div class="info-item"><div class="info-label">Education</div><div class="info-value" style="font-size:12px;">${tutor.education}</div></div><div class="info-item"><div class="info-label">Experience</div><div class="info-value">${tutor.experience}</div></div><div class="info-item"><div class="info-label">Fee</div><div class="info-value">${tutor.fee}</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-book"></i> Subjects Taught</div><div class="subjects-list">${subjectsHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-calendar-alt"></i> Availability</div><div class="availability-list">${availabilityHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-star"></i> Reviews (${tutor.reviews})</div>${reviewsHtml}</div>
+        
+        <button class="btn-enquire" onclick="enquireTutor(${id}, '${tutor.name}', '${tutor.fee}')">📝 Enquire for Tuition →</button>
+      </div>
+    `;
+    
+    document.getElementById('tutorContent').innerHTML = html;
+  }
+  
+  function enquireTutor(id, name, fee) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to enquire', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'school', serviceType: 'tutor', id: id, name: name, fee: fee }));
+    window.location.href = `/school/booking.html?type=tutor&id=${id}&name=${encodeURIComponent(name)}&fee=${fee}`;
+  }
+  
+  function errorPage() { document.getElementById('tutorContent').innerHTML = `<div class="tutor-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Tutor Not Found</h3><a href="/school/index.html" class="btn btn-primary">Back to Schools</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.enquireTutor = enquireTutor;
+  updateUI();
+  loadTutor();
+</script>
+</body>
+</html>

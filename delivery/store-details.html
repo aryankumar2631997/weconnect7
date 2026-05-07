@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Store Details | WeConnect Delivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .store-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .store-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .store-icon { width: 100px; height: 100px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .store-info { flex: 1; }
+    .store-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .store-type { font-size: 14px; color: var(--blue); margin-bottom: 12px; }
+    .store-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .store-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; font-size: 13px; color: var(--text-muted); }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .product-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .product-name { font-weight: 600; font-size: 15px; }
+    .product-price { font-weight: 700; color: var(--blue); }
+    .product-stock { font-size: 10px; color: var(--green); margin-top: 2px; }
+    .add-btn { padding: 4px 12px; background: var(--text); color: var(--bg); border: none; border-radius: 20px; font-size: 11px; cursor: pointer; }
+    .cart-bar { position: sticky; bottom: 0; background: var(--text); color: var(--bg); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-radius: var(--radius-lg); margin-top: 20px; }
+    .btn-checkout { padding: 10px 28px; background: var(--confirmed); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
+    @media (max-width: 768px) { .products-grid { grid-template-columns: 1fr; } .store-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/delivery/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Delivery</a>
+    <div id="storeContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading store details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const storesDB = {
+    201: {
+      name: "Fresh Mart Grocery", type: "Grocery Store", rating: 4.6, reviews: 234,
+      location: "Station Road, Lakhisarai", deliveryTime: "30-45 min", minOrder: "₹99",
+      about: "Fresh Mart offers fresh vegetables, fruits, dairy products, and household essentials delivered to your doorstep.",
+      products: [
+        { name: "Fresh Vegetables Combo", price: 199, stock: true },
+        { name: "Fresh Fruits Combo", price: 249, stock: true },
+        { name: "Dairy Pack (Milk, Curd, Paneer)", price: 120, stock: true },
+        { name: "Rice - 5kg", price: 220, stock: true },
+        { name: "Atta (Wheat Flour) - 5kg", price: 180, stock: true },
+        { name: "Cooking Oil - 1L", price: 110, stock: true },
+        { name: "Snacks Pack", price: 80, stock: true },
+        { name: "Beverages Pack", price: 150, stock: true }
+      ]
+    },
+    202: {
+      name: "Lakhisarai General Store", type: "General Store", rating: 4.4, reviews: 189,
+      location: "Main Bazaar, Lakhisarai", deliveryTime: "25-35 min", minOrder: "₹50",
+      about: "Your one-stop shop for all daily needs - snacks, beverages, household items, and more.",
+      products: [
+        { name: "Namkeen Pack", price: 40, stock: true },
+        { name: "Biscuits Pack", price: 30, stock: true },
+        { name: "Cold Drinks (2L)", price: 70, stock: true },
+        { name: "Washing Powder", price: 45, stock: true },
+        { name: "Soap Bar", price: 35, stock: true },
+        { name: "Toothpaste", price: 60, stock: true }
+      ]
+    },
+    301: {
+      name: "MedPlus Pharmacy", type: "Pharmacy", rating: 4.7, reviews: 234,
+      location: "Station Road, Lakhisarai", deliveryTime: "30-40 min", minOrder: "₹50",
+      about: "MedPlus Pharmacy provides genuine medicines and healthcare products with free home delivery.",
+      products: [
+        { name: "Paracetamol 500mg (10 tabs)", price: 25, stock: true },
+        { name: "Vitamin C Tablets", price: 80, stock: true },
+        { name: "Face Mask (Pack of 10)", price: 50, stock: true },
+        { name: "Hand Sanitizer (100ml)", price: 40, stock: true },
+        { name: "First Aid Kit", price: 150, stock: true },
+        { name: "BP Monitor", price: 1800, stock: true }
+      ]
+    }
+  };
+
+  let cart = [];
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadStore() {
+    const id = getQueryParam('id');
+    if (!id || !storesDB[id]) { errorPage(); return; }
+    
+    const store = storesDB[id];
+    const starsFull = Math.floor(store.rating);
+    const starsHalf = store.rating % 1 >= 0.5 ? '½' : '';
+    
+    const productsHtml = store.products.map(product => `
+      <div class="product-item">
+        <div>
+          <div class="product-name">${product.name}</div>
+          <div class="product-stock">${product.stock ? '✅ In Stock' : '❌ Out of Stock'}</div>
+        </div>
+        <div>
+          <span class="product-price">₹${product.price}</span>
+          <button class="add-btn" onclick="addToCart('${product.name}', ${product.price})" ${!product.stock ? 'disabled' : ''}>Add</button>
+        </div>
+      </div>
+    `).join('');
+    
+    const html = `
+      <div class="store-card">
+        <div class="store-header">
+          <div class="store-icon">${store.type === 'Grocery Store' ? '🛒' : store.type === 'Pharmacy' ? '💊' : '🏪'}</div>
+          <div class="store-info">
+            <div class="store-name">${store.name}</div>
+            <div class="store-type">${store.type}</div>
+            <div class="store-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${store.rating} (${store.reviews} reviews)</div>
+            <div class="store-meta"><span>🚚 Delivery: ${store.deliveryTime}</span><span>💰 Min Order: ${store.minOrder}</span><span>📍 ${store.location}</span></div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Store</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light);">${store.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-box-open"></i> Products</div><div class="products-grid">${productsHtml}</div></div>
+        
+        <div id="cartBar" class="cart-bar" style="display: none;">
+          <div><span>🛒 Cart: <span id="cartCount">0</span> items</span></div>
+          <div class="cart-total">Total: ₹<span id="cartTotal">0</span></div>
+          <button class="btn-checkout" onclick="checkout('${store.name}', '${store.type}')">Place Order →</button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('storeContent').innerHTML = html;
+  }
+  
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    updateCartUI();
+  }
+  
+  function updateCartUI() {
+    const cartBar = document.getElementById('cartBar');
+    if (cart.length > 0) {
+      cartBar.style.display = 'flex';
+      document.getElementById('cartCount').textContent = cart.length;
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById('cartTotal').textContent = total;
+    } else {
+      cartBar.style.display = 'none';
+    }
+  }
+  
+  function checkout(storeName, storeType) {
+    if (cart.length === 0) { WeConnect.showToast('Add items to cart first', 'warning'); return; }
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to place order', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    const total = cart.reduce((sum, i) => sum + i.price, 0);
+    const items = cart.map(i => `${i.name} (₹${i.price})`).join(', ');
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'delivery', serviceType: storeType.toLowerCase(), name: storeName, items: items, total: total }));
+    window.location.href = `/delivery/booking.html?type=${storeType.toLowerCase()}&name=${encodeURIComponent(storeName)}&total=${total}`;
+  }
+  
+  function errorPage() { document.getElementById('storeContent').innerHTML = `<div class="store-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Store Not Found</h3><a href="/delivery/index.html" class="btn btn-primary">Back to Delivery</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.addToCart = addToCart;
+  window.checkout = checkout;
+  updateUI();
+  loadStore();
+</script>
+</body>
+</html>

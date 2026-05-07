@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Complete Your Booking | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .booking-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .booking-wrapper { max-width: 650px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .booking-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .service-header { padding: 24px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, var(--bg-secondary), var(--bg)); }
+    .service-icon { width: 60px; height: 60px; background: var(--bg); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
+    .service-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .service-meta { font-size: 13px; color: var(--text-muted); }
+    .booking-summary { padding: 20px 24px; background: var(--bg-secondary); }
+    .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .summary-label { font-weight: 600; }
+    .summary-value { font-weight: 700; color: var(--blue); }
+    .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 700; font-size: 18px; color: var(--text); border-top: 1px solid var(--border); margin-top: 8px; }
+    .form-section { padding: 24px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; background: var(--bg); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn-confirm { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 16px; }
+    .btn-confirm:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="booking-container">
+  <div class="booking-wrapper">
+    <a href="/hotel/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Hotels</a>
+    <div id="bookingContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading booking details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadBooking() {
+    const tempData = sessionStorage.getItem('booking_temp');
+    let bookingInfo = null;
+    
+    if (tempData) {
+      bookingInfo = JSON.parse(tempData);
+    } else {
+      const type = getQueryParam('type');
+      const id = getQueryParam('id');
+      const itemName = getQueryParam('name');
+      const price = getQueryParam('price');
+      if (type && id) {
+        bookingInfo = { type: type, serviceType: type, id: id, name: itemName || 'Service', price: price || 0 };
+      }
+    }
+    
+    if (!bookingInfo) { errorPage(); return; }
+    
+    const serviceIcons = { hotel: '🏨', banquet: '🎉', catering: '🍽️', dj: '🎵', decoration: '🎨', tent: '🏕️' };
+    const icon = serviceIcons[bookingInfo.type] || '📋';
+    
+    let priceDisplay = bookingInfo.price ? (typeof bookingInfo.price === 'number' ? `₹${bookingInfo.price}` : bookingInfo.price) : 'Contact for quote';
+    let calculatedPrice = typeof bookingInfo.price === 'number' ? bookingInfo.price : 0;
+    
+    const html = `
+      <div class="booking-card">
+        <div class="service-header">
+          <div class="service-icon">${icon}</div>
+          <div class="service-name">${bookingInfo.name || 'Service Booking'}</div>
+          <div class="service-meta">${bookingInfo.type === 'hotel' ? 'Hotel Room Booking' : bookingInfo.type === 'banquet' ? 'Banquet Hall Booking' : bookingInfo.type === 'catering' ? 'Catering Service' : bookingInfo.type === 'dj' ? 'DJ / Music Service' : bookingInfo.type === 'decoration' ? 'Decoration Service' : 'Tent / Pandal Service'}</div>
+        </div>
+        
+        <div class="booking-summary">
+          <div class="summary-row"><span class="summary-label">Service</span><span class="summary-value">${bookingInfo.name}</span></div>
+          <div class="summary-row"><span class="summary-label">Package / Item</span><span class="summary-value">${bookingInfo.roomName || bookingInfo.packageName || 'Standard'}</span></div>
+          <div class="summary-row"><span class="summary-label">Price per unit</span><span class="summary-value">${priceDisplay}</span></div>
+          <div class="summary-row"><span class="summary-label">Quantity</span><span class="summary-value"><span id="quantityDisplay">1</span> <button class="btn-quantity" onclick="changeQuantity(-1)">-</button> <button class="btn-quantity" onclick="changeQuantity(1)">+</button></span></div>
+          <div class="total-row"><span>Total Amount</span><span id="totalAmount">${priceDisplay}</span></div>
+        </div>
+        
+        <div class="form-section">
+          <form id="bookingForm">
+            <div class="form-row">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
+              <div class="form-group"><label>WhatsApp Number *</label><input type="tel" id="phone" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Email (optional)</label><input type="email" id="email"></div>
+              <div class="form-group"><label>Event / Booking Date *</label><input type="date" id="eventDate" required></div>
+            </div>
+            ${bookingInfo.type === 'hotel' ? `
+              <div class="form-row">
+                <div class="form-group"><label>Check-in Date *</label><input type="date" id="checkin" required></div>
+                <div class="form-group"><label>Check-out Date *</label><input type="date" id="checkout" required></div>
+              </div>
+              <div class="form-group"><label>Number of Guests *</label><select id="guests"><option>1 Guest</option><option>2 Guests</option><option>3 Guests</option><option>4 Guests</option><option>5+ Guests</option></select></div>
+            ` : bookingInfo.type === 'banquet' ? `
+              <div class="form-group"><label>Expected Guests *</label><select id="guests"><option>100-200 guests</option><option>200-300 guests</option><option>300-500 guests</option><option>500+ guests</option></select></div>
+              <div class="form-group"><label>Event Type *</label><select id="eventType"><option>Wedding</option><option>Birthday Party</option><option>Corporate Event</option><option>Anniversary</option><option>Other</option></select></div>
+            ` : `
+              <div class="form-group"><label>Number of People / Guests *</label><select id="guests"><option>50-100 people</option><option>100-200 people</option><option>200-300 people</option><option>300-500 people</option><option>500+ people</option></select></div>
+            `}
+            <div class="form-group"><label>Special Requests / Requirements</label><textarea id="requests" rows="3" placeholder="Any special requests or requirements..."></textarea></div>
+            <button type="submit" class="btn-confirm">✅ Confirm Booking</button>
+          </form>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('bookingContent').innerHTML = html;
+    
+    const today = new Date().toISOString().split('T')[0];
+    if (document.getElementById('eventDate')) document.getElementById('eventDate').min = today;
+    if (document.getElementById('checkin')) document.getElementById('checkin').min = today;
+    
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) { if (document.getElementById('fullName')) document.getElementById('fullName').value = user.name || ''; if (document.getElementById('phone')) document.getElementById('phone').value = user.phone || ''; }
+    
+    window.quantity = 1;
+    window.pricePerUnit = typeof bookingInfo.price === 'number' ? bookingInfo.price : 0;
+    
+    document.getElementById('bookingForm').addEventListener('submit', (e) => submitBooking(e, bookingInfo));
+  }
+  
+  function changeQuantity(delta) {
+    window.quantity = Math.max(1, window.quantity + delta);
+    document.getElementById('quantityDisplay').textContent = window.quantity;
+    if (window.pricePerUnit > 0) {
+      const total = window.pricePerUnit * window.quantity;
+      document.getElementById('totalAmount').textContent = `₹${total}`;
+    }
+  }
+  
+  function submitBooking(e, bookingInfo) {
+    e.preventDefault();
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    
+    const name = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const eventDate = document.getElementById('eventDate')?.value;
+    const checkin = document.getElementById('checkin')?.value;
+    const checkout = document.getElementById('checkout')?.value;
+    const guests = document.getElementById('guests')?.value;
+    const eventType = document.getElementById('eventType')?.value;
+    const requests = document.getElementById('requests')?.value;
+    
+    if (!name || !phone) { WeConnect.showToast('Please fill your name and phone number', 'error'); return; }
+    
+    const quantity = window.quantity || 1;
+    const totalPrice = window.pricePerUnit * quantity;
+    
+    const bookingId = 'LC-' + Date.now();
+    const booking = {
+      id: bookingId, userId: user.id, userPhone: user.phone, userName: user.name || name,
+      serviceType: bookingInfo.type === 'hotel' ? "Hotel" : bookingInfo.type === 'banquet' ? "Banquet Hall" : bookingInfo.type === 'catering' ? "Catering" : bookingInfo.type === 'dj' ? "DJ Service" : bookingInfo.type === 'decoration' ? "Decoration" : "Tent Service",
+      serviceName: bookingInfo.name,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      formData: { serviceName: bookingInfo.name, packageName: bookingInfo.roomName || bookingInfo.packageName || 'Standard', quantity: quantity, totalPrice: totalPrice > 0 ? totalPrice : 'Contact for quote', customerName: name, customerPhone: phone, eventDate: eventDate, checkin: checkin, checkout: checkout, guests: guests, eventType: eventType, specialRequests: requests }
+    };
+    
+    let bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
+    bookings.push(booking);
+    localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+    
+    sessionStorage.removeItem('booking_temp');
+    WeConnect.showToast(`✅ Booking confirmed! ID: ${bookingId}`, 'success');
+    setTimeout(() => window.location.href = `/user/confirmation.html?id=${bookingId}`, 1500);
+  }
+  
+  function errorPage() { document.getElementById('bookingContent').innerHTML = `<div class="booking-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Booking Error</h3><p>No service selected. Please go back and try again.</p><a href="/hotel/index.html" class="btn btn-primary">Back to Hotels</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.changeQuantity = changeQuantity;
+  updateUI();
+  loadBooking();
+</script>
+</body>
+</html>

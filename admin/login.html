@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .login-container {
+      max-width: 450px;
+      width: 100%;
+    }
+    
+    .login-card {
+      background: white;
+      border-radius: 30px;
+      padding: 50px 40px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      animation: fadeInUp 0.6s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .login-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .login-icon i {
+      font-size: 32px;
+      color: white;
+    }
+    
+    .login-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+    
+    .login-header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .input-group {
+      margin-bottom: 24px;
+    }
+    
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 18px;
+    }
+    
+    .input-wrapper input {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      border: 2px solid #e0e0e0;
+      border-radius: 16px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+    }
+    
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+    }
+    
+    .error-message {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .demo-credentials {
+      margin-top: 30px;
+      padding-top: 25px;
+      border-top: 1px solid #eee;
+      text-align: center;
+    }
+    
+    .demo-credentials p {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    
+    .demo-badge {
+      display: inline-block;
+      background: #f0f2f5;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .demo-badge span {
+      color: #667eea;
+      font-weight: 700;
+    }
+    
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .back-link a {
+      color: #999;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    
+    .back-link a:hover {
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <h1>Welcome Back</h1>
+      <p>Login to access the admin dashboard</p>
+    </div>
+    
+    <div class="error-message" id="errorMsg">
+      <i class="fas fa-exclamation-circle"></i> Invalid email or password
+    </div>
+    
+    <div class="input-group">
+      <label>Email Address</label>
+      <div class="input-wrapper">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="adminEmail" placeholder="admin@weconnect.com">
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <label>Password</label>
+      <div class="input-wrapper">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="adminPassword" placeholder="Enter your password">
+      </div>
+    </div>
+    
+    <button class="login-btn" onclick="doLogin()">
+      <i class="fas fa-arrow-right"></i> Login to Dashboard
+    </button>
+    
+    <div class="demo-credentials">
+      <p>Demo Credentials</p>
+      <div class="demo-badge">
+        📧 <span>admin@weconnect.com</span> &nbsp;|&nbsp; 🔑 <span>admin123</span>
+      </div>
+    </div>
+    
+    <div class="back-link">
+      <a href="/index.html">
+        <i class="fas fa-arrow-left"></i> Back to Homepage
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function doLogin() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    const errorDiv = document.getElementById('errorMsg');
+    
+    if (email === 'admin@weconnect.com' && password === 'admin123') {
+      localStorage.setItem('weconnect_admin_logged_in', 'true');
+      window.location.href = '/admin/dashboard.html';
+    } else {
+      errorDiv.style.display = 'block';
+      setTimeout(function() {
+        errorDiv.style.display = 'none';
+      }, 3000);
+    }
+  }
+  
+  document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      doLogin();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Wedding Vendor Details | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .vendor-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .vendor-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .vendor-icon { width: 80px; height: 80px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .vendor-info { flex: 1; }
+    .vendor-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .vendor-location { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .vendor-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .features-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .feature-tag { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 30px; font-size: 13px; }
+    .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+    .portfolio-item { background: var(--bg-secondary); border-radius: var(--radius-md); height: 100px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-book { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+    .btn-book:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .portfolio-grid { grid-template-columns: 1fr; } .vendor-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/wedding/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Wedding Services</a>
+    <div id="vendorContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading vendor details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const vendorsDB = {
+    venues: {
+      101: { name: "Maharaja Grand", location: "Main Bazaar, Lakhisarai", rating: 4.8, reviews: 567, price: "₹30,000-1,00,000", capacity: "700 guests", area: "5000 sq ft", about: "Maharaja Grand is the largest banquet hall in Lakhisarai, perfect for grand weddings and celebrations.", features: ["AC Hall", "Outdoor Lawn", "Parking", "Changing Rooms", "Catering Services", "DJ System", "Stage", "Lighting"], packages: ["Basic: ₹30,000", "Standard: ₹50,000 (with Decoration)", "Premium: ₹1,00,000 (with Catering & DJ)"] },
+      102: { name: "Rajdhani Banquet Hall", location: "Station Road, Lakhisarai", rating: 4.3, reviews: 234, price: "₹15,000-50,000", capacity: "300 guests", area: "2000 sq ft", about: "Rajdhani Banquet Hall is perfect for weddings, receptions, and corporate events.", features: ["AC Hall", "Parking", "Changing Rooms", "Power Backup", "WiFi"], packages: ["Basic: ₹15,000", "Standard: ₹25,000", "Premium: ₹50,000"] }
+    },
+    catering: {
+      201: { name: "Royal Catering", location: "Lakhisarai", rating: 4.7, reviews: 456, price: "₹400-800/plate", cuisine: "Veg, Non-Veg, Continental", about: "Royal Catering specializes in wedding catering with live counters and authentic flavors.", features: ["Live Counters", "Multi-cuisine", "Veg/Non-Veg", "Dessert Station", "Beverages"], packages: ["Basic: ₹400/plate", "Standard: ₹600/plate", "Premium: ₹800/plate"] },
+      202: { name: "Spice Garden Catering", location: "Lakhisarai", rating: 4.5, reviews: 321, price: "₹350-600/plate", cuisine: "Traditional Indian", about: "Spice Garden offers authentic Indian wedding catering with traditional recipes.", features: ["Traditional Dishes", "Pure Veg Options", "Biryani Special", "Welcome Drinks"], packages: ["Basic: ₹350/plate", "Standard: ₹450/plate", "Premium: ₹600/plate"] }
+    },
+    photography: {
+      301: { name: "Memories Photography", location: "Lakhisarai", rating: 4.9, reviews: 432, price: "₹25,000-70,000", style: "Candid & Traditional", about: "Memories Photography captures your special moments with candid and traditional styles.", features: ["Candid Photography", "Traditional Shots", "Pre-wedding Shoot", "Album Included", "Drone Shots"], packages: ["Basic: ₹25,000", "Standard: ₹45,000", "Premium: ₹70,000"] }
+    },
+    decoration: {
+      401: { name: "Floral Dreams Decor", location: "Lakhisarai", rating: 4.7, reviews: 312, price: "₹15,000-60,000", style: "Flower & Theme", about: "Floral Dreams creates magical wedding decor with fresh flowers and creative themes.", features: ["Fresh Flowers", "Theme Based", "Stage Decor", "Mandap Setup", "Lighting"], packages: ["Basic: ₹15,000", "Standard: ₹35,000", "Premium: ₹60,000"] }
+    },
+    dj: {
+      501: { name: "DJ Sound Factory", location: "Lakhisarai", rating: 4.8, reviews: 234, price: "₹10,000-30,000", style: "All Genres", about: "DJ Sound Factory provides high-quality music and sound for weddings and events.", features: ["High Quality Sound", "All Genres", "Lighting Effects", "MC Services", "Bollywood Hits"], packages: ["Basic: ₹10,000", "Standard: ₹20,000", "Premium: ₹30,000"] }
+    }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadVendor() {
+    const type = getQueryParam('type');
+    const id = getQueryParam('id');
+    
+    if (!type || !id || !vendorsDB[type] || !vendorsDB[type][id]) { errorPage(); return; }
+    
+    const vendor = vendorsDB[type][id];
+    const starsFull = Math.floor(vendor.rating);
+    const starsHalf = vendor.rating % 1 >= 0.5 ? '½' : '';
+    
+    const typeNames = { venues: 'Venue', catering: 'Catering', photography: 'Photography', decoration: 'Decoration', dj: 'DJ / Music' };
+    
+    const featuresHtml = vendor.features.map(f => `<span class="feature-tag">✅ ${f}</span>`).join('');
+    const packagesHtml = vendor.packages ? `<div class="info-grid" style="margin-top: 16px;">${vendor.packages.map(p => `<div class="info-item"><div class="info-label">${p.split(':')[0]}</div><div class="info-value">${p.split(':')[1]}</div></div>`).join('')}</div>` : '';
+    
+    const html = `
+      <div class="vendor-card">
+        <div class="vendor-header">
+          <div class="vendor-icon">${type === 'venues' ? '🏰' : type === 'catering' ? '🍽️' : type === 'photography' ? '📸' : type === 'decoration' ? '🎨' : '🎵'}</div>
+          <div class="vendor-info">
+            <div class="vendor-name">${vendor.name}</div>
+            <div class="vendor-location"><i class="fas fa-map-marker-alt"></i> ${vendor.location}</div>
+            <div class="vendor-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${vendor.rating} (${vendor.reviews} reviews)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Vendor</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light);">${vendor.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-tag"></i> Pricing & Packages</div><div class="info-grid"><div class="info-item"><div class="info-label">Price Range</div><div class="info-value">${vendor.price}</div></div>${vendor.capacity ? `<div class="info-item"><div class="info-label">Capacity</div><div class="info-value">${vendor.capacity}</div></div>` : ''}<div class="info-item"><div class="info-label">Booking Advance</div><div class="info-value">50% Advance</div></div></div>${packagesHtml}</div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-star"></i> Features & Services</div><div class="features-list">${featuresHtml}</div></div>
+        
+        <button class="btn-book" onclick="bookVendor('${type}', ${id}, '${vendor.name}', '${vendor.price}')">📅 Book ${typeNames[type] || 'Service'} →</button>
+      </div>
+    `;
+    
+    document.getElementById('vendorContent').innerHTML = html;
+  }
+  
+  function bookVendor(type, id, name, price) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'wedding', serviceType: type, vendorId: id, vendorName: name, price: price }));
+    window.location.href = `/wedding/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&price=${price}`;
+  }
+  
+  function errorPage() { document.getElementById('vendorContent').innerHTML = `<div class="vendor-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Vendor Not Found</h3><a href="/wedding/index.html" class="btn btn-primary">Back to Wedding Services</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookVendor = bookVendor;
+  updateUI();
+  loadVendor();
+</script>
+</body>
+</html>

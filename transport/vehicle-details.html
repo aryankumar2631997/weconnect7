@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Vehicle Details | WeConnect Transport</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .vehicle-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .vehicle-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .vehicle-icon { width: 100px; height: 100px; background: var(--bg-secondary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 56px; }
+    .vehicle-info { flex: 1; }
+    .vehicle-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .vehicle-type { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .vehicle-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .feature-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+    .feature-icon { font-size: 18px; width: 28px; }
+    .feature-text { font-size: 14px; font-weight: 500; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .driver-card { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 20px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .driver-name { font-size: 16px; font-weight: 700; }
+    .driver-experience { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .btn-book { padding: 12px 32px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 20px; width: 100%; transition: all 0.2s; }
+    .btn-book:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } .info-grid { grid-template-columns: 1fr; } .vehicle-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/transport/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Transport</a>
+    <div id="vehicleContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading vehicle details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const vehiclesDB = {
+    car: {
+      1: { name: "Sedan (4 Seater)", type: "Car", rating: 4.7, reviews: 234, price: "₹12/km", priceValue: 12, features: ["AC", "4 Seats", "Luggage Space", "GPS Navigation", "USB Charging"], image: "🚗", driver: { name: "Rajesh Kumar", experience: "8 years", phone: "+919876543201", rating: 4.8 }, about: "Comfortable sedan perfect for city travel and airport transfers. Well-maintained and driven by experienced driver." },
+      2: { name: "SUV (7 Seater)", type: "Car", rating: 4.8, reviews: 189, price: "₹15/km", priceValue: 15, features: ["AC", "7 Seats", "Big Luggage Space", "GPS", "Music System"], image: "🚙", driver: { name: "Manoj Singh", experience: "12 years", phone: "+919876543202", rating: 4.9 }, about: "Spacious SUV ideal for family trips and outstation travel. Ample luggage space and comfortable seating." },
+      3: { name: "Outstation Taxi", type: "Car", rating: 4.6, reviews: 156, price: "Call for quote", priceValue: 0, features: ["AC", "Round Trip", "Driver Included", "24/7 Support", "Toll Included"], image: "🚐", driver: { name: "Suresh Yadav", experience: "15 years", phone: "+919876543203", rating: 4.7 }, about: "Perfect for long-distance travel to Patna, Ranchi, Kolkata, and other cities. All-inclusive package." },
+      4: { name: "Luxury Sedan", type: "Car", rating: 4.9, reviews: 98, price: "₹20/km", priceValue: 20, features: ["Premium AC", "4 Seats", "Leather Seats", "WiFi", "Water Bottles"], image: "🚗", driver: { name: "Vikash Thakur", experience: "10 years", phone: "+919876543204", rating: 4.9 }, about: "Luxury sedan for VIP travel, corporate events, and special occasions. Premium service guarantee." }
+    },
+    bike: {
+      5: { name: "Bike Taxi", type: "Bike", rating: 4.5, reviews: 345, price: "₹10/km", priceValue: 10, features: ["Fast", "1 Passenger", "Best for Short Trips", "Helmet Included"], image: "🏍️", driver: { name: "Rahul Kumar", experience: "5 years", phone: "+919876543205", rating: 4.6 }, about: "Quick and affordable bike taxi for navigating through city traffic. Ideal for short distances." },
+      6: { name: "Premium Bike", type: "Bike", rating: 4.7, reviews: 234, price: "₹15/km", priceValue: 15, features: ["Premium Bike", "1 Passenger", "Comfortable", "Helmet Included"], image: "🏍️", driver: { name: "Amit Verma", experience: "7 years", phone: "+919876543206", rating: 4.8 }, about: "Premium bike service with comfortable seating and professional riders. Great for quick commutes." }
+    },
+    toto: {
+      7: { name: "Toto / E-Rickshaw", type: "Toto", rating: 4.4, reviews: 567, price: "₹20 for 2km + ₹8/km", priceValue: 8, features: ["Budget Friendly", "3-4 Passengers", "Short City Trips", "Eco-friendly"], image: "🛺", driver: { name: "Sunil Kumar", experience: "6 years", phone: "+919876543207", rating: 4.5 }, about: "Eco-friendly e-rickshaw for short distances within the city. Most affordable transport option." },
+      8: { name: "Shared Toto", type: "Toto", rating: 4.2, reviews: 432, price: "₹10 per seat", priceValue: 10, features: ["Shared Ride", "Cheapest Option", "Fixed Routes"], image: "🛺", driver: { name: "Ramesh Prasad", experience: "4 years", phone: "+919876543208", rating: 4.3 }, about: "Shared toto service on popular routes. Most economical way to travel around the city." }
+    }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadVehicle() {
+    const id = getQueryParam('id');
+    const type = getQueryParam('type');
+    
+    if (!id || !type || !vehiclesDB[type] || !vehiclesDB[type][id]) { errorPage(); return; }
+    
+    const vehicle = vehiclesDB[type][id];
+    const starsFull = Math.floor(vehicle.rating);
+    const starsHalf = vehicle.rating % 1 >= 0.5 ? '½' : '';
+    const driverStars = Math.floor(vehicle.driver.rating);
+    const driverStarsHalf = vehicle.driver.rating % 1 >= 0.5 ? '½' : '';
+    
+    const featuresHtml = vehicle.features.map(f => `
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-check-circle" style="color: var(--confirmed);"></i></div>
+        <div class="feature-text">${f}</div>
+      </div>
+    `).join('');
+    
+    const html = `
+      <div class="vehicle-card">
+        <div class="vehicle-header">
+          <div class="vehicle-icon">${vehicle.image}</div>
+          <div class="vehicle-info">
+            <div class="vehicle-name">${vehicle.name}</div>
+            <div class="vehicle-type"><i class="fas fa-tag"></i> ${vehicle.type}</div>
+            <div class="vehicle-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${vehicle.rating} (${vehicle.reviews} reviews)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Support</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light);">${vehicle.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-star"></i> Features & Amenities</div><div class="features-grid">${featuresHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-money-bill-wave"></i> Pricing</div><div class="info-grid"><div class="info-item"><div class="info-label">Rate</div><div class="info-value">${vehicle.price}</div></div><div class="info-item"><div class="info-label">Min. Fare</div><div class="info-value">₹${vehicle.priceValue > 0 ? vehicle.priceValue * 5 : 100}</div></div><div class="info-item"><div class="info-label">Booking Advance</div><div class="info-value">No Advance</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-user-circle"></i> Driver Details</div><div class="driver-card"><div><div class="driver-name">👨‍✈️ ${vehicle.driver.name}</div><div class="driver-experience">⭐ ${vehicle.driver.rating} (${driverStars}★) • ${vehicle.driver.experience} experience</div><div class="driver-experience">📞 ${vehicle.driver.phone}</div></div><button class="btn-call" onclick="window.location.href='tel:${vehicle.driver.phone}'"><i class="fas fa-phone-alt"></i> Call Driver</button></div></div>
+        
+        <button class="btn-book" onclick="bookVehicle('${type}', ${id}, '${vehicle.name}', '${vehicle.price}', ${vehicle.priceValue})">🚖 Book This Vehicle →</button>
+      </div>
+    `;
+    
+    document.getElementById('vehicleContent').innerHTML = html;
+  }
+  
+  function bookVehicle(type, id, name, price, priceValue) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'transport', vehicleType: type, vehicleId: id, vehicleName: name, price: price, priceValue: priceValue }));
+    window.location.href = `/transport/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&price=${price}`;
+  }
+  
+  function errorPage() { document.getElementById('vehicleContent').innerHTML = `<div class="vehicle-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Vehicle Not Found</h3><a href="/transport/index.html" class="btn btn-primary">Back to Transport</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookVehicle = bookVehicle;
+  updateUI();
+  loadVehicle();
+</script>
+</body>
+</html>

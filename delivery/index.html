@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Delivery Services | WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .delivery-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .delivery-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 32px; background: var(--bg-secondary); padding: 6px; border-radius: var(--radius-xl); flex-wrap: wrap; }
+    .tab-btn { padding: 12px 24px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-light); cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s; }
+    .tab-btn.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow-sm); }
+    
+    .stores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .store-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .store-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .store-image { height: 140px; background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); display: flex; align-items: center; justify-content: center; font-size: 56px; border-bottom: 1px solid var(--border); }
+    .store-info { padding: 20px; }
+    .store-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .store-location { font-size: 13px; color: var(--text-light); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .store-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .stars { color: #F59E0B; font-size: 12px; }
+    .store-delivery { font-size: 13px; font-weight: 600; color: var(--green); margin-top: 8px; }
+    .store-footer { padding: 16px 20px; background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .order-btn { padding: 8px 24px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .order-btn:hover { background: #333; transform: translateY(-2px); }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .tabs { justify-content: center; }
+      .stores-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="delivery-container">
+  <div class="delivery-wrapper">
+    <div class="page-header">
+      <h1>📦 Delivery Services</h1>
+      <p>Food, grocery, medicine & parcel delivery in Lakhisarai</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">30+</div><div class="stat-label-sm">Restaurants</div></div>
+      <div class="stat-item"><div class="stat-number-lg">15+</div><div class="stat-label-sm">Grocery Stores</div></div>
+      <div class="stat-item"><div class="stat-number-lg">10+</div><div class="stat-label-sm">Pharmacies</div></div>
+      <div class="stat-item"><div class="stat-number-lg">30min</div><div class="stat-label-sm">Delivery Time</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search by name or location..."></div>
+        <select id="priceFilter" class="filter-select"><option value="all">All Price Ranges</option><option value="budget">Budget (Under ₹200)</option><option value="mid">Mid (₹200-500)</option><option value="premium">Premium (₹500+)</option></select>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="restaurants">🍕 Restaurants</button>
+      <button class="tab-btn" data-tab="grocery">🛒 Grocery</button>
+      <button class="tab-btn" data-tab="pharmacy">💊 Pharmacy</button>
+      <button class="tab-btn" data-tab="parcel">📦 Parcel Service</button>
+    </div>
+    
+    <div id="storesGrid" class="stores-grid"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const storesData = {
+    restaurants: [
+      { id: 101, name: "Biryani House", location: "Station Road, Lakhisarai", rating: 4.5, reviews: 345, price: "₹200-500", cuisine: "North Indian, Mughlai", deliveryTime: "35-45 min", image: "🍕", type: "restaurant" },
+      { id: 102, name: "Pizza Point", location: "Main Bazaar, Lakhisarai", rating: 4.3, reviews: 289, price: "₹150-400", cuisine: "Italian, Fast Food", deliveryTime: "25-35 min", image: "🍕", type: "restaurant" },
+      { id: 103, name: "South Dosa Corner", location: "Katoria Road, Lakhisarai", rating: 4.6, reviews: 412, price: "₹100-250", cuisine: "South Indian", deliveryTime: "20-30 min", image: "🍕", type: "restaurant" },
+      { id: 104, name: "Chinese Wok", location: "Shastri Nagar, Lakhisarai", rating: 4.4, reviews: 234, price: "₹180-450", cuisine: "Chinese", deliveryTime: "30-40 min", image: "🍕", type: "restaurant" }
+    ],
+    grocery: [
+      { id: 201, name: "Fresh Mart Grocery", location: "Station Road, Lakhisarai", rating: 4.6, reviews: 234, price: "₹100-500", items: "Vegetables, Fruits, Dairy, Staples", deliveryTime: "30-45 min", image: "🛒", type: "grocery" },
+      { id: 202, name: "Lakhisarai General Store", location: "Main Bazaar, Lakhisarai", rating: 4.4, reviews: 189, price: "₹50-300", items: "Snacks, Beverages, Household", deliveryTime: "25-35 min", image: "🛒", type: "grocery" },
+      { id: 203, name: "Organic Fresh", location: "Katoria Road, Lakhisarai", rating: 4.7, reviews: 156, price: "₹150-600", items: "Organic Vegetables, Fruits, Grains", deliveryTime: "40-50 min", image: "🛒", type: "grocery" }
+    ],
+    pharmacy: [
+      { id: 301, name: "MedPlus Pharmacy", location: "Station Road, Lakhisarai", rating: 4.7, reviews: 234, price: "MRP", services: "24/7, Home Delivery", deliveryTime: "30-40 min", image: "💊", type: "pharmacy" },
+      { id: 302, name: "Apollo Pharmacy", location: "Main Bazaar, Lakhisarai", rating: 4.8, reviews: 189, price: "MRP", services: "Online Doctor, Medicine Delivery", deliveryTime: "25-35 min", image: "💊", type: "pharmacy" },
+      { id: 303, name: "Wellness Pharmacy", location: "Katoria Road, Lakhisarai", rating: 4.5, reviews: 143, price: "MRP", services: "Health Products, Baby Care", deliveryTime: "30-40 min", image: "💊", type: "pharmacy" }
+    ],
+    parcel: [
+      { id: 401, name: "Speed Parcel Service", location: "Station Road, Lakhisarai", rating: 4.5, reviews: 234, price: "₹30-200", service: "Document, Courier, Parcel", deliveryTime: "Same Day", image: "📦", type: "parcel" },
+      { id: 402, name: "DTDC Courier", location: "Main Bazaar, Lakhisarai", rating: 4.6, reviews: 189, price: "₹40-300", service: "National Courier", deliveryTime: "1-3 Days", image: "📦", type: "parcel" }
+    ]
+  };
+
+  let currentTab = 'restaurants';
+  let searchTerm = '';
+  let priceFilter = 'all';
+
+  function getStars(rating) { return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : ''); }
+
+  function renderStores() {
+    const container = document.getElementById('storesGrid');
+    let items = storesData[currentTab];
+    
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm));
+    
+    if (priceFilter === 'budget') items = items.filter(item => parseInt(item.price) < 200);
+    else if (priceFilter === 'mid') items = items.filter(item => parseInt(item.price) >= 200 && parseInt(item.price) < 500);
+    else if (priceFilter === 'premium') items = items.filter(item => parseInt(item.price) >= 500);
+    
+    if (items.length === 0) { container.innerHTML = '<div style="text-align:center;padding:60px;"><i class="fas fa-search" style="font-size:48px;opacity:0.5;"></i><h3>No stores found</h3></div>'; return; }
+    
+    container.innerHTML = items.map(store => `
+      <div class="store-card">
+        <div class="store-image">${store.image}</div>
+        <div class="store-info">
+          <div class="store-name">${store.name}</div>
+          <div class="store-location"><i class="fas fa-map-marker-alt"></i> ${store.location}</div>
+          <div class="store-rating"><span class="stars">${getStars(store.rating)}</span><span>(${store.reviews} reviews)</span></div>
+          <div class="store-delivery">🚚 Delivery: ${store.deliveryTime}</div>
+        </div>
+        <div class="store-footer">
+          <button class="order-btn" onclick="orderNow('${currentTab}', ${store.id}, '${store.name}', '${store.price}')">Order Now →</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function orderNow(type, id, name, price) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to place order', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'delivery', serviceType: type, id: id, name: name, price: price }));
+    window.location.href = `/delivery/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&price=${price}`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      renderStores();
+    });
+  });
+  
+  document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderStores(); });
+  document.getElementById('priceFilter').addEventListener('change', (e) => { priceFilter = e.target.value; renderStores(); });
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block';
+      if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none';
+      if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.orderNow = orderNow;
+  updateUI();
+  renderStores();
+</script>
+</body>
+</html>

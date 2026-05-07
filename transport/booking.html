@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Transport Booking | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .booking-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .booking-wrapper { max-width: 650px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .booking-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .service-header { padding: 24px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, var(--bg-secondary), var(--bg)); }
+    .vehicle-icon { width: 60px; height: 60px; background: var(--bg); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
+    .vehicle-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .vehicle-meta { font-size: 13px; color: var(--text-muted); }
+    .booking-summary { padding: 20px 24px; background: var(--bg-secondary); }
+    .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .summary-label { font-weight: 600; }
+    .summary-value { font-weight: 700; color: var(--blue); }
+    .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 700; font-size: 18px; color: var(--text); border-top: 1px solid var(--border); margin-top: 8px; }
+    .fare-estimate { background: rgba(59,130,246,0.08); padding: 12px 16px; border-radius: var(--radius-md); margin-top: 16px; text-align: center; font-size: 13px; color: var(--blue); }
+    .form-section { padding: 24px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; background: var(--bg); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn-confirm { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 16px; }
+    .btn-confirm:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="booking-container">
+  <div class="booking-wrapper">
+    <a href="/transport/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Transport</a>
+    <div id="bookingContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading booking details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadBooking() {
+    const tempData = sessionStorage.getItem('booking_temp');
+    let bookingInfo = null;
+    
+    if (tempData) {
+      bookingInfo = JSON.parse(tempData);
+    } else {
+      const type = getQueryParam('type');
+      const id = getQueryParam('id');
+      const name = getQueryParam('name');
+      const price = getQueryParam('price');
+      if (type && id) {
+        bookingInfo = { type: 'transport', vehicleType: type, vehicleId: id, vehicleName: name || 'Vehicle', price: price || 'Contact for quote', priceValue: 0 };
+      }
+    }
+    
+    if (!bookingInfo) { errorPage(); return; }
+    
+    const vehicleIcons = { car: '🚗', bike: '🏍️', toto: '🛺' };
+    const icon = vehicleIcons[bookingInfo.vehicleType] || '🚗';
+    
+    const html = `
+      <div class="booking-card">
+        <div class="service-header">
+          <div class="vehicle-icon">${icon}</div>
+          <div class="vehicle-name">${bookingInfo.vehicleName || 'Vehicle Booking'}</div>
+          <div class="vehicle-meta">${bookingInfo.vehicleType === 'car' ? 'Car Rental' : bookingInfo.vehicleType === 'bike' ? 'Bike Taxi' : 'Toto / E-Rickshaw'}</div>
+        </div>
+        
+        <div class="booking-summary">
+          <div class="summary-row"><span class="summary-label">Vehicle</span><span class="summary-value">${bookingInfo.vehicleName}</span></div>
+          <div class="summary-row"><span class="summary-label">Rate</span><span class="summary-value">${bookingInfo.price}</span></div>
+          <div class="summary-row"><span class="summary-label">Estimated Distance</span><span class="summary-value"><input type="number" id="distance" value="10" min="1" max="500" style="width:100px; padding:4px;"> km</span></div>
+          <div id="fareRow" class="fare-estimate">💰 Estimated Fare: ₹120</div>
+          <div class="total-row"><span>Total Amount</span><span id="totalAmount">₹120</span></div>
+        </div>
+        
+        <div class="form-section">
+          <form id="bookingForm">
+            <input type="hidden" id="priceValue" value="${bookingInfo.priceValue || 0}">
+            <div class="form-row">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
+              <div class="form-group"><label>WhatsApp Number *</label><input type="tel" id="phone" required></div>
+            </div>
+            <div class="form-group"><label>Pickup Location *</label><input type="text" id="pickup" required placeholder="Enter your pickup address"></div>
+            <div class="form-group"><label>Drop Location *</label><input type="text" id="drop" required placeholder="Enter your destination"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Date *</label><input type="date" id="date" required></div>
+              <div class="form-group"><label>Time *</label><select id="time" required><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option></select></div>
+            </div>
+            <div class="form-group"><label>Number of Passengers *</label><select id="passengers"><option>1 Passenger</option><option>2 Passengers</option><option>3 Passengers</option><option>4 Passengers</option><option>5+ Passengers</option></select></div>
+            <div class="form-group"><label>Additional Instructions (optional)</label><textarea id="instructions" rows="2" placeholder="Any special requests?"></textarea></div>
+            <button type="submit" class="btn-confirm">✅ Confirm Booking</button>
+          </form>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('bookingContent').innerHTML = html;
+    
+    const today = new Date().toISOString().split('T')[0];
+    if (document.getElementById('date')) document.getElementById('date').min = today;
+    
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) { if (document.getElementById('fullName')) document.getElementById('fullName').value = user.name || ''; if (document.getElementById('phone')) document.getElementById('phone').value = user.phone || ''; }
+    
+    document.getElementById('distance').addEventListener('input', updateFare);
+    document.getElementById('bookingForm').addEventListener('submit', (e) => submitBooking(e, bookingInfo));
+    updateFare();
+  }
+  
+  function updateFare() {
+    const distance = parseInt(document.getElementById('distance')?.value) || 0;
+    const priceValue = parseInt(document.getElementById('priceValue')?.value) || 0;
+    let fare = 0;
+    if (priceValue > 0) { fare = distance * priceValue; if (fare < 50) fare = 50; }
+    else { fare = 100 + (distance * 8); }
+    document.getElementById('fareRow').innerHTML = `💰 Estimated Fare: ₹${fare}`;
+    document.getElementById('totalAmount').innerHTML = `₹${fare}`;
+  }
+  
+  function submitBooking(e, bookingInfo) {
+    e.preventDefault();
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    
+    const name = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const pickup = document.getElementById('pickup').value.trim();
+    const drop = document.getElementById('drop').value.trim();
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const passengers = document.getElementById('passengers').value;
+    const instructions = document.getElementById('instructions').value;
+    const distance = parseInt(document.getElementById('distance')?.value) || 0;
+    const priceValue = parseInt(document.getElementById('priceValue')?.value) || 0;
+    const total = priceValue > 0 ? distance * priceValue : 100 + (distance * 8);
+    
+    if (!name || !phone || !pickup || !drop || !date) { WeConnect.showToast('Please fill all required fields', 'error'); return; }
+    
+    const bookingId = 'LC-' + Date.now();
+    const booking = {
+      id: bookingId, userId: user.id, userPhone: user.phone, userName: user.name || name,
+      serviceType: "Transport",
+      serviceName: bookingInfo.vehicleName,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      formData: { vehicle: bookingInfo.vehicleName, pickup: pickup, drop: drop, date: date, time: time, distance: distance + ' km', totalFare: `₹${total}`, passengers: passengers, customerName: name, customerPhone: phone, instructions: instructions }
+    };
+    
+    let bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
+    bookings.push(booking);
+    localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+    
+    sessionStorage.removeItem('booking_temp');
+    WeConnect.showToast(`✅ Booking confirmed! ID: ${bookingId}`, 'success');
+    setTimeout(() => window.location.href = `/user/confirmation.html?id=${bookingId}`, 1500);
+  }
+  
+  function errorPage() { document.getElementById('bookingContent').innerHTML = `<div class="booking-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Booking Error</h3><p>No vehicle selected. Please go back and try again.</p><a href="/transport/index.html" class="btn btn-primary">Back to Transport</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  updateUI();
+  loadBooking();
+</script>
+</body>
+</html>

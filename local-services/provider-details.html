@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Service Provider Details | WeConnect Local Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 900px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .provider-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .provider-header { padding: 28px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .provider-avatar { width: 100px; height: 100px; background: var(--bg-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .provider-info { flex: 1; }
+    .provider-name { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .provider-service { font-size: 16px; color: var(--blue); margin-bottom: 12px; }
+    .provider-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 8px 20px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .info-value { font-size: 18px; font-weight: 700; }
+    .service-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .service-tag { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 30px; font-size: 13px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; background: rgba(16,185,129,0.1); color: var(--confirmed); }
+    .reviews-list { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .review-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px; }
+    .review-stars { color: #F59E0B; font-size: 12px; margin-bottom: 8px; }
+    .review-text { font-size: 13px; color: var(--text-light); margin-bottom: 8px; }
+    .review-author { font-size: 11px; color: var(--text-muted); }
+    .btn-book { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+    .btn-book:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .provider-header { flex-direction: column; text-align: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="detail-container">
+  <div class="detail-wrapper">
+    <a href="/local-services/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Local Services</a>
+    <div id="providerContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading provider details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  const providersDB = {
+    1: {
+      name: "Ramesh Electrician", type: "Electrician", location: "Station Road, Lakhisarai",
+      rating: 4.9, reviews: 234, experience: "12+ years", price: "₹400-800",
+      about: "Ramesh Electrician has been serving Lakhisarai for over 12 years. Specializes in home wiring, appliance repair, and electrical maintenance. Known for quality work and affordable rates.",
+      services: ["Home Wiring", "Fan Installation", "Light Fitting", "MCB Repair", "Inverter Service", "Switch Repair"],
+      timings: "8:00 AM - 8:00 PM",
+      languages: ["Hindi", "Maithili"],
+      certifications: ["Licensed Electrician", "Safety Certified"],
+      reviewsList: [
+        { author: "Rahul Kumar", rating: 5, text: "Very professional and timely service. Fixed my wiring issue quickly.", date: "2024-01-15" },
+        { author: "Priya Singh", rating: 5, text: "Excellent work! Highly recommended.", date: "2024-01-10" }
+      ]
+    },
+    2: {
+      name: "Sunil Electricals", type: "Electrician", location: "Main Bazaar, Lakhisarai",
+      rating: 4.6, reviews: 189, experience: "8+ years", price: "₹300-600",
+      about: "Sunil Electricals offers quality electrical services at affordable prices. Specializes in residential and commercial electrical work.",
+      services: ["Wiring", "Light Installation", "Repair Work", "Panel Fixing"],
+      timings: "9:00 AM - 7:00 PM",
+      languages: ["Hindi"],
+      certifications: ["Licensed Electrician"],
+      reviewsList: [
+        { author: "Amit Sharma", rating: 4, text: "Good service at reasonable price.", date: "2024-01-08" }
+      ]
+    },
+    5: {
+      name: "Suresh Plumber", type: "Plumber", location: "Katoria Road, Lakhisarai",
+      rating: 4.9, reviews: 345, experience: "15+ years", price: "₹300-700",
+      about: "Suresh Plumber is the most trusted plumber in Lakhisarai with 15+ years of experience. Specializes in leakage repair, pipe fitting, and bathroom renovation.",
+      services: ["Leakage Repair", "Pipe Fitting", "Tap Installation", "Bathroom Fitting", "Drain Cleaning", "Water Tank Cleaning"],
+      timings: "7:00 AM - 9:00 PM",
+      languages: ["Hindi", "Maithili"],
+      certifications: ["Licensed Plumber"],
+      reviewsList: [
+        { author: "Neha Gupta", rating: 5, text: "Fixed my leakage problem in no time. Very professional.", date: "2024-01-12" }
+      ]
+    },
+    8: {
+      name: "Vijay Carpenter", type: "Carpenter", location: "Main Bazaar, Lakhisarai",
+      rating: 4.9, reviews: 234, experience: "20+ years", price: "₹400-1000",
+      about: "Vijay Carpenter is a master craftsman with 20 years of experience in furniture making and repair. Known for quality woodwork and custom designs.",
+      services: ["Furniture Repair", "Custom Furniture", "Door/Window Repair", "Kitchen Cabinet", "Wood Polishing"],
+      timings: "9:00 AM - 7:00 PM",
+      languages: ["Hindi"],
+      certifications: ["Master Carpenter"],
+      reviewsList: [
+        { author: "Rajesh Singh", rating: 5, text: "Beautiful furniture work! Highly satisfied.", date: "2024-01-14" }
+      ]
+    }
+  };
+
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadProvider() {
+    const id = getQueryParam('id');
+    if (!id || !providersDB[id]) { errorPage(); return; }
+    
+    const provider = providersDB[id];
+    const starsFull = Math.floor(provider.rating);
+    const starsHalf = provider.rating % 1 >= 0.5 ? '½' : '';
+    
+    const servicesHtml = provider.services.map(s => `<span class="service-tag">✅ ${s}</span>`).join('');
+    const languagesHtml = provider.languages.map(l => `<span class="badge" style="background:var(--bg);">${l}</span>`).join('');
+    const certsHtml = provider.certifications.map(c => `<span class="badge" style="background:var(--bg);">📜 ${c}</span>`).join('');
+    
+    const reviewsHtml = provider.reviewsList.map(r => `
+      <div class="review-item">
+        <div class="review-stars">${'★'.repeat(r.rating)}</div>
+        <div class="review-text">"${r.text}"</div>
+        <div class="review-author">— ${r.author} (${new Date(r.date).toLocaleDateString()})</div>
+      </div>
+    `).join('');
+    
+    const html = `
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-avatar">${provider.type === 'Electrician' ? '⚡' : provider.type === 'Plumber' ? '🔧' : '🪚'}</div>
+          <div class="provider-info">
+            <div class="provider-name">${provider.name}</div>
+            <div class="provider-service">${provider.type} Service • ${provider.experience} experience</div>
+            <div class="provider-rating"><span class="stars">${'★'.repeat(starsFull)}${starsHalf}</span> ${provider.rating} (${provider.reviews} reviews)</div>
+            <div class="contact-buttons"><a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call Provider</a><a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+          </div>
+        </div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light); line-height: 1.6;">${provider.about}</p></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-wrench"></i> Services Offered</div><div class="service-list">${servicesHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-clock"></i> Service Information</div><div class="info-grid"><div class="info-item"><div class="info-label">Working Hours</div><div class="info-value">${provider.timings}</div></div><div class="info-item"><div class="info-label">Price Range</div><div class="info-value">${provider.price}</div></div><div class="info-item"><div class="info-label">Response Time</div><div class="info-value">30-60 min</div></div></div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-language"></i> Languages</div><div>${languagesHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-certificate"></i> Certifications</div><div>${certsHtml}</div></div>
+        
+        <div class="section"><div class="section-title"><i class="fas fa-star"></i> Customer Reviews (${provider.reviews})</div><div class="reviews-list">${reviewsHtml}</div></div>
+        
+        <div style="padding: 20px 28px 28px;">
+          <button class="btn-book" onclick="bookProvider(${id}, '${provider.name}', '${provider.type}')">🔧 Book ${provider.name} →</button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('providerContent').innerHTML = html;
+  }
+  
+  function bookProvider(id, name, type) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'local-service', serviceType: type.toLowerCase(), providerId: id, providerName: name }));
+    window.location.href = `/local-services/booking.html?type=${type.toLowerCase()}&provider=${encodeURIComponent(name)}`;
+  }
+  
+  function errorPage() { document.getElementById('providerContent').innerHTML = `<div class="provider-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Provider Not Found</h3><a href="/local-services/index.html" class="btn btn-primary">Back to Local Services</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.bookProvider = bookProvider;
+  updateUI();
+  loadProvider();
+</script>
+</body>
+</html>

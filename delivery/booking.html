@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Delivery Order | WeConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .booking-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .booking-wrapper { max-width: 650px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .booking-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border); }
+    .service-header { padding: 24px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, var(--bg-secondary), var(--bg)); }
+    .service-icon { width: 60px; height: 60px; background: var(--bg); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
+    .service-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .service-meta { font-size: 13px; color: var(--text-muted); }
+    .booking-summary { padding: 20px 24px; background: var(--bg-secondary); }
+    .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .summary-label { font-weight: 600; }
+    .summary-value { font-weight: 700; color: var(--blue); }
+    .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 700; font-size: 18px; color: var(--text); border-top: 1px solid var(--border); margin-top: 8px; }
+    .estimate-box { background: rgba(59,130,246,0.08); border-radius: var(--radius-md); padding: 12px; margin-top: 16px; text-align: center; font-size: 13px; color: var(--blue); }
+    .form-section { padding: 24px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; background: var(--bg); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .items-list { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; }
+    .item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .item-row input { flex: 2; }
+    .item-row input.item-price { width: 80px; flex: none; }
+    .item-row button { padding: 8px 12px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-sm); cursor: pointer; }
+    .add-item-btn { padding: 8px 16px; background: var(--outline); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 13px; cursor: pointer; width: 100%; margin-top: 10px; }
+    .btn-confirm { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 16px; }
+    .btn-confirm:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } .item-row { flex-wrap: wrap; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="booking-container">
+  <div class="booking-wrapper">
+    <a href="/delivery/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Stores</a>
+    <div id="bookingContent"><div style="text-align:center;padding:60px;"><i class="fas fa-spinner fa-spin"></i> Loading order details...</div></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  let items = [{ name: "", quantity: 1, price: 0 }];
+  let deliveryFee = 30;
+  
+  function getQueryParam(param) { return new URLSearchParams(window.location.search).get(param); }
+
+  function loadBooking() {
+    const tempData = sessionStorage.getItem('booking_temp');
+    let bookingInfo = null;
+    
+    if (tempData) {
+      bookingInfo = JSON.parse(tempData);
+    } else {
+      const type = getQueryParam('type');
+      const id = getQueryParam('id');
+      const name = getQueryParam('name');
+      const price = getQueryParam('price');
+      if (type && name) {
+        bookingInfo = { type: 'delivery', serviceType: type, id: id, name: name, price: price || 'Contact for quote' };
+      }
+    }
+    
+    if (!bookingInfo) { errorPage(); return; }
+    
+    const serviceIcons = { restaurant: '🍕', grocery: '🛒', pharmacy: '💊', parcel: '📦' };
+    const icon = serviceIcons[bookingInfo.serviceType] || '📦';
+    
+    const html = `
+      <div class="booking-card">
+        <div class="service-header">
+          <div class="service-icon">${icon}</div>
+          <div class="service-name">${bookingInfo.name || 'Store'}</div>
+          <div class="service-meta">${bookingInfo.serviceType === 'restaurant' ? 'Food Delivery' : bookingInfo.serviceType === 'grocery' ? 'Grocery Delivery' : bookingInfo.serviceType === 'pharmacy' ? 'Medicine Delivery' : 'Parcel/Courier Service'}</div>
+        </div>
+        
+        <div class="booking-summary">
+          <div class="summary-row"><span class="summary-label">Store</span><span class="summary-value">${bookingInfo.name}</span></div>
+          <div class="summary-row"><span class="summary-label">Delivery Fee</span><span class="summary-value">₹${deliveryFee}</span></div>
+          <div class="total-row"><span>Total Amount</span><span id="totalAmount">₹${deliveryFee}</span></div>
+        </div>
+        
+        <div class="form-section">
+          <form id="orderForm">
+            <div class="form-row">
+              <div class="form-group"><label>Your Full Name *</label><input type="text" id="fullName" required></div>
+              <div class="form-group"><label>WhatsApp Number *</label><input type="tel" id="phone" required></div>
+            </div>
+            <div class="form-group"><label>Delivery Address *</label><input type="text" id="address" required placeholder="Your complete address"></div>
+            <div class="form-group"><label>Items to Order *</label>
+              <div class="items-list" id="itemsList"></div>
+              <button type="button" class="add-item-btn" onclick="addItem()">+ Add More Item</button>
+            </div>
+            <div class="estimate-box" id="estimateBox">💰 Subtotal: ₹0 | Delivery: ₹30 | Total: ₹30</div>
+            <button type="submit" class="btn-confirm">✅ Place Order</button>
+          </form>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('bookingContent').innerHTML = html;
+    renderItemsList();
+    
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) { if (document.getElementById('fullName')) document.getElementById('fullName').value = user.name || ''; if (document.getElementById('phone')) document.getElementById('phone').value = user.phone || ''; }
+    
+    document.getElementById('orderForm').addEventListener('submit', (e) => submitOrder(e, bookingInfo));
+  }
+  
+  function renderItemsList() {
+    const container = document.getElementById('itemsList');
+    container.innerHTML = items.map((item, idx) => `
+      <div class="item-row" data-idx="${idx}">
+        <input type="text" placeholder="Item name" value="${item.name}" onchange="updateItem(${idx}, 'name', this.value)" style="flex:2;">
+        <input type="number" placeholder="Qty" value="${item.quantity}" min="1" onchange="updateItem(${idx}, 'quantity', parseInt(this.value))" style="width:70px;">
+        <input type="number" placeholder="Price" value="${item.price}" onchange="updateItem(${idx}, 'price', parseInt(this.value))" style="width:80px;">
+        <button onclick="removeItem(${idx})" ${items.length === 1 ? 'disabled' : ''}>✕</button>
+      </div>
+    `).join('');
+    updateTotal();
+  }
+  
+  function addItem() { items.push({ name: "", quantity: 1, price: 0 }); renderItemsList(); }
+  function removeItem(idx) { if (items.length > 1) { items.splice(idx, 1); renderItemsList(); } }
+  function updateItem(idx, field, value) { items[idx][field] = value; updateTotal(); }
+  
+  function updateTotal() {
+    let subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = subtotal + deliveryFee;
+    document.getElementById('estimateBox').innerHTML = `💰 Subtotal: ₹${subtotal} | Delivery: ₹${deliveryFee} | Total: ₹${total}`;
+    document.getElementById('totalAmount').innerHTML = `₹${total}`;
+  }
+  
+  function submitOrder(e, bookingInfo) {
+    e.preventDefault();
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to place order', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    
+    const name = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const address = document.getElementById('address').value.trim();
+    
+    if (!name || !phone || !address) { WeConnect.showToast('Please fill all required fields', 'error'); return; }
+    
+    const validItems = items.filter(i => i.name.trim());
+    if (validItems.length === 0) { WeConnect.showToast('Please add at least one item', 'error'); return; }
+    
+    const subtotal = items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+    const total = subtotal + deliveryFee;
+    
+    const bookingId = 'LC-' + Date.now();
+    const booking = {
+      id: bookingId, userId: user.id, userPhone: user.phone, userName: user.name || name,
+      serviceType: bookingInfo.serviceType === 'restaurant' ? "Food Delivery" : bookingInfo.serviceType === 'grocery' ? "Grocery Delivery" : bookingInfo.serviceType === 'pharmacy' ? "Medicine Delivery" : "Parcel Service",
+      serviceName: bookingInfo.name,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      formData: { store: bookingInfo.name, items: items.filter(i => i.name.trim()).map(i => `${i.name} x${i.quantity} (₹${i.price})`).join(', '), subtotal: subtotal, deliveryFee: deliveryFee, total: total, customerName: name, customerPhone: phone, deliveryAddress: address }
+    };
+    
+    let bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
+    bookings.push(booking);
+    localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+    
+    sessionStorage.removeItem('booking_temp');
+    WeConnect.showToast(`✅ Order placed! ID: ${bookingId}`, 'success');
+    setTimeout(() => window.location.href = `/user/confirmation.html?id=${bookingId}`, 1500);
+  }
+  
+  function errorPage() { document.getElementById('bookingContent').innerHTML = `<div class="booking-card"><div style="text-align:center;padding:60px;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--rejected);"></i><h3>Order Error</h3><p>No store selected. Please go back and try again.</p><a href="/delivery/index.html" class="btn btn-primary">Back to Stores</a></div></div>`; }
+  
+  function updateUI() { const u = WeConnectAuth.getCurrentUser(); if (u) { document.getElementById('login-nav-btn').style.display = 'none'; document.getElementById('logout-nav-btn').style.display = 'inline-flex'; document.getElementById('user-name').style.display = 'inline-block'; document.getElementById('user-name').textContent = u.name || u.phone; document.getElementById('my-orders-link').style.display = 'inline-block'; } }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.addItem = addItem; window.removeItem = removeItem; window.updateItem = updateItem;
+  updateUI();
+  loadBooking();
+</script>
+</body>
+</html>

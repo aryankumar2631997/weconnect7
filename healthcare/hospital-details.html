@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Hospital Details | WeConnect Healthcare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* your existing CSS - unchanged */
+    .hospital-detail-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .detail-wrapper { max-width: 1000px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); text-decoration: none; margin-bottom: 24px; font-size: 14px; }
+    .back-link:hover { color: var(--text); }
+    .hospital-card { background: var(--bg); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+    .hospital-header { padding: 32px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+    .hospital-icon { width: 100px; height: 100px; background: rgba(59,130,246,0.1); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .hospital-info { flex: 1; }
+    .hospital-name { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .hospital-location { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .hospital-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .stars { color: #F59E0B; font-size: 14px; }
+    .reviews { font-size: 13px; color: var(--text-muted); }
+    .contact-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-call { padding: 10px 24px; background: rgba(16,185,129,0.1); color: var(--confirmed); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-md); font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+    .btn-call:hover { background: var(--confirmed); color: white; }
+    .section { padding: 32px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-box { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px; text-align: center; }
+    .stat-number { font-size: 28px; font-weight: 700; color: var(--blue); }
+    .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .facilities-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .facility-tag { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; }
+    .booking-form { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 24px; margin-top: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .btn-submit { width: 100%; padding: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-submit:hover { background: #333; transform: translateY(-2px); }
+    @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .form-row { grid-template-columns: 1fr; } .hospital-header { flex-direction: column; text-align: center; } .hospital-rating { justify-content: center; } .contact-buttons { justify-content: center; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons"><span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span><button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button><button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button></div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu"><a href="/index.html">Home</a><a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a><a href="/user/login.html" id="mobile-login">Login</a><a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a></div>
+
+<div class="hospital-detail-container">
+  <div class="detail-wrapper">
+    <a href="/healthcare/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Healthcare</a>
+    <div id="hospitalContent"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  // Complete Hospitals Database (your original - keep exactly)
+  const hospitalsDB = {
+    1: {
+      id: 1,
+      name: "Sadar Hospital Lakhisarai",
+      location: "Station Road, Lakhisarai",
+      type: "Government District Hospital",
+      rating: 4.2,
+      reviews: 345,
+      emergency: true,
+      beds: 200,
+      doctors: 25,
+      departments: ["General Medicine", "Pediatrics", "Orthopedics", "ENT", "Eye Care", "Dental"],
+      facilities: ["24/7 Emergency", "OPD Services", "Pharmacy", "Laboratory", "X-Ray", "Ambulance", "Blood Bank"],
+      price: "Free",
+      timings: "24/7",
+      about: "Sadar Hospital is the primary government district hospital serving Lakhisarai since 1972. It provides quality healthcare services to all citizens at affordable rates."
+    },
+    2: {
+      id: 2,
+      name: "City Care Multi-Specialty Hospital",
+      location: "Main Bazaar, Lakhisarai",
+      type: "Private Multi-specialty",
+      rating: 4.8,
+      reviews: 892,
+      emergency: true,
+      beds: 150,
+      doctors: 35,
+      departments: ["Cardiology", "Neurology", "Orthopedics", "Gynecology", "Pediatrics", "Dermatology", "Urology", "ENT"],
+      facilities: ["24/7 Emergency", "ICU", "NICU", "Modular OT", "CT Scan", "Ultrasound", "Endoscopy", "Blood Bank", "Ambulance"],
+      price: "₹300-800",
+      timings: "24/7",
+      about: "City Care Hospital is a 150-bed multi-specialty hospital equipped with modern medical technology. Established in 2015, we have treated over 50,000 patients."
+    },
+    3: {
+      id: 3,
+      name: "Lakhisarai Nursing Home",
+      location: "Katoria Road, Lakhisarai",
+      type: "Maternity & Child Care",
+      rating: 4.5,
+      reviews: 567,
+      emergency: true,
+      beds: 80,
+      doctors: 15,
+      departments: ["Maternity", "Gynecology", "Pediatrics", "General Medicine", "Surgery"],
+      facilities: ["24/7 Emergency", "Labor Room", "NICU", "Pharmacy", "Ultrasound", "Ambulance"],
+      price: "₹200-600",
+      timings: "24/7",
+      about: "Specialized in maternity and child care. We have delivered over 5,000 healthy babies since 2008."
+    }
+  };
+
+  function getHospitalIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+  }
+
+  function loadHospital() {
+    const hospitalId = getHospitalIdFromUrl();
+    if (!hospitalId) { showError('No hospital selected'); return; }
+    const hospital = hospitalsDB[hospitalId];
+    if (!hospital) { showError('Hospital not found'); return; }
+    
+    const starsFull = Math.floor(hospital.rating);
+    const starsHalf = hospital.rating % 1 >= 0.5 ? '½' : '';
+    const starsDisplay = '★'.repeat(starsFull) + starsHalf;
+    const departmentsHtml = hospital.departments.map(d => `<span class="facility-tag">${d}</span>`).join('');
+    const facilitiesHtml = hospital.facilities.map(f => `<span class="facility-tag">${f}</span>`).join('');
+    
+    const html = `
+      <div class="hospital-card">
+        <div class="hospital-header">
+          <div class="hospital-icon">🏥</div>
+          <div class="hospital-info">
+            <div class="hospital-name">${hospital.name}</div>
+            <div class="hospital-location"><i class="fas fa-map-marker-alt"></i> ${hospital.location}</div>
+            <div class="hospital-rating">
+              <span class="stars">${starsDisplay}</span>
+              <span class="reviews">(${hospital.reviews} reviews)</span>
+            </div>
+            <div class="contact-buttons">
+              <a href="tel:+918102284634" class="btn-call"><i class="fas fa-phone-alt"></i> Call: +91 81022 84634</a>
+              <a href="https://wa.me/918102284634" class="btn-call"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+          </div>
+        </div>
+        <div class="section"><div class="section-title"><i class="fas fa-info-circle"></i> About</div><p style="color: var(--text-light); line-height: 1.6;">${hospital.about}</p></div>
+        <div class="section"><div class="stats-grid"><div class="stat-box"><div class="stat-number">${hospital.beds}+</div><div class="stat-label">Beds</div></div><div class="stat-box"><div class="stat-number">${hospital.doctors}+</div><div class="stat-label">Doctors</div></div><div class="stat-box"><div class="stat-number">${hospital.departments.length}</div><div class="stat-label">Departments</div></div><div class="stat-box"><div class="stat-number">24/7</div><div class="stat-label">Emergency</div></div></div></div>
+        <div class="section"><div class="section-title"><i class="fas fa-stethoscope"></i> Departments</div><div class="facilities-list">${departmentsHtml}</div></div>
+        <div class="section"><div class="section-title"><i class="fas fa-building"></i> Facilities & Services</div><div class="facilities-list">${facilitiesHtml}</div></div>
+        <div class="section"><div class="section-title"><i class="fas fa-calendar-check"></i> Book Appointment</div>
+          <form id="bookingForm" class="booking-form">
+            <div class="form-row">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="patientName" required></div>
+              <div class="form-group"><label>WhatsApp Number *</label><input type="tel" id="patientPhone" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Preferred Date *</label><input type="date" id="appointmentDate" required></div>
+              <div class="form-group"><label>Preferred Time *</label><select id="appointmentTime" required>
+                <option value="">Select time</option>
+                <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option>
+                <option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>
+              </select></div>
+            </div>
+            <div class="form-group"><label>Department Required</label><select id="department">
+              <option value="">Select department</option>
+              ${hospital.departments.map(d => `<option value="${d}">${d}</option>`).join('')}
+            </select></div>
+            <div class="form-group"><label>Describe Your Health Issue *</label><textarea id="symptoms" rows="3" required placeholder="Briefly describe your symptoms..."></textarea></div>
+            <button type="submit" class="btn-submit">✅ Book Appointment</button>
+          </form>
+        </div>
+      </div>
+    `;
+    document.getElementById('hospitalContent').innerHTML = html;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('appointmentDate');
+    if (dateInput) dateInput.min = today;
+    
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      const nameInput = document.getElementById('patientName');
+      const phoneInput = document.getElementById('patientPhone');
+      if (nameInput) nameInput.value = user.name || '';
+      if (phoneInput) phoneInput.value = user.phone || '';
+    }
+    
+    // FIXED: form submission using localStorage (no broken fetch)
+    const form = document.getElementById('bookingForm');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const currentUser = WeConnectAuth.getCurrentUser();
+        if (!currentUser) {
+          WeConnect.showToast('Please login to book appointment', 'warning');
+          setTimeout(() => window.location.href = '/user/login.html', 1000);
+          return;
+        }
+        const name = document.getElementById('patientName').value.trim();
+        const phone = document.getElementById('patientPhone').value.trim();
+        const date = document.getElementById('appointmentDate').value;
+        const time = document.getElementById('appointmentTime').value;
+        const department = document.getElementById('department').value;
+        const symptoms = document.getElementById('symptoms').value.trim();
+        if (!name || !phone || !date || !time || !symptoms) {
+          WeConnect.showToast('Please fill all required fields', 'error');
+          return;
+        }
+        const hospital = hospitalsDB[getHospitalIdFromUrl()];
+        const bookingId = 'LC-' + Date.now();
+        const booking = {
+          id: bookingId, userId: currentUser.id, userPhone: currentUser.phone,
+          userName: currentUser.name || name, serviceType: "Healthcare",
+          serviceName: hospital.name, status: "pending",
+          createdAt: new Date().toISOString(),
+          formData: { hospital: hospital.name, department: department || "General",
+                      patientName: name, patientPhone: phone, date: date, time: time, symptoms: symptoms }
+        };
+        let bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
+        bookings.push(booking);
+        localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
+        WeConnect.showToast(`✅ Booking confirmed! ID: ${bookingId}`, 'success');
+        setTimeout(() => window.location.href = `/user/confirmation.html?id=${bookingId}`, 1500);
+      });
+    }
+  }
+  
+  function showError(message) {
+    document.getElementById('hospitalContent').innerHTML = `
+      <div class="hospital-card"><div style="text-align: center; padding: 60px;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px; color: var(--rejected);"></i>
+        <h3>${message}</h3>
+        <p>The hospital you're looking for doesn't exist or has been removed.</p>
+        <a href="/healthcare/index.html" class="btn btn-primary" style="margin-top: 20px;">Back to Healthcare</a>
+      </div></div>
+    `;
+  }
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      const mobileMyOrders = document.getElementById('mobile-my-orders');
+      if (mobileMyOrders) mobileMyOrders.style.display = 'block';
+      const mobileLogin = document.getElementById('mobile-login');
+      if (mobileLogin) mobileLogin.style.display = 'none';
+      const mobileLogout = document.getElementById('mobile-logout');
+      if (mobileLogout) mobileLogout.style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { WeConnectAuth.logout(); window.location.href = '/index.html'; };
+  updateUI();
+  loadHospital();
+</script>
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Login | WeConnect - Lakhisarai's Super App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Login Page Specific */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px 60px;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+    }
+    .login-card {
+      max-width: 460px;
+      width: 100%;
+      background: var(--bg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .login-header {
+      padding: 32px 32px 0;
+      text-align: center;
+    }
+    .login-header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .login-header p {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    .login-tabs {
+      display: flex;
+      padding: 24px 32px 0;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .login-tab {
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      position: relative;
+      background: none;
+      border: none;
+    }
+    .login-tab.active {
+      color: var(--text);
+    }
+    .login-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--text);
+    }
+    .login-form-container {
+      padding: 32px;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--text);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
+    .input-icon {
+      position: relative;
+    }
+    .input-icon i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .input-icon input {
+      padding-left: 45px;
+    }
+    .otp-group {
+      display: flex;
+      gap: 12px;
+    }
+    .otp-group input {
+      flex: 1;
+    }
+    .otp-group button {
+      white-space: nowrap;
+      min-width: 100px;
+    }
+    .forgot-link {
+      text-align: right;
+      margin-bottom: 24px;
+    }
+    .forgot-link a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .forgot-link a:hover {
+      color: var(--text);
+    }
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .login-btn:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+    .register-link {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    .register-link a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .or-divider {
+      display: flex;
+      align-items: center;
+      margin: 24px 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .or-divider::before,
+    .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .or-divider span {
+      padding: 0 16px;
+    }
+    .social-login {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .social-btn:hover {
+      border-color: var(--text);
+      background: var(--bg-secondary);
+    }
+    .otp-timer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+    .error-message {
+      color: var(--rejected);
+      font-size: 13px;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .success-message {
+      color: var(--confirmed);
+      font-size: 13px;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .otp-step {
+      display: none;
+    }
+    .otp-step.active {
+      display: block;
+    }
+    .demo-note {
+      background: var(--bg-secondary);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      margin-top: 20px;
+      font-size: 12px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .demo-note code {
+      background: var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    @media (max-width: 480px) {
+      .login-card {
+        margin: 0 16px;
+      }
+      .login-header {
+        padding: 24px 24px 0;
+      }
+      .login-tabs {
+        padding: 20px 24px 0;
+      }
+      .login-form-container {
+        padding: 24px;
+      }
+      .otp-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo">
+      <div class="logo-icon">🔗</div>
+      <div class="logo-text">We<span>Connect</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/index.html#services">Services</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <a href="/user/register.html" class="btn btn-outline">Sign Up</a>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/register.html">Sign Up</a>
+</div>
+
+<!-- Login Container -->
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Welcome Back 👋</h1>
+      <p>Login to your WeConnect account</p>
+    </div>
+
+    <!-- Login Tabs -->
+    <div class="login-tabs">
+      <button class="login-tab active" data-tab="password">Password Login</button>
+      <button class="login-tab" data-tab="otp">OTP Login</button>
+    </div>
+
+    <!-- Password Login Form -->
+    <div class="login-form-container" id="password-login">
+      <form id="passwordLoginForm">
+        <div class="form-group">
+          <label>Phone Number or Email</label>
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="text" id="loginIdentifier" placeholder="Enter phone number or email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+          </div>
+        </div>
+        <div class="forgot-link">
+          <a href="#">Forgot password?</a>
+        </div>
+        <button type="submit" class="login-btn">Login →</button>
+      </form>
+
+      <div class="or-divider">
+        <span>OR</span>
+      </div>
+
+      <div class="social-login">
+        <button class="social-btn" onclick="showDemo('phone')">
+          <i class="fab fa-google"></i> Google
+        </button>
+        <button class="social-btn" onclick="showDemo('phone')">
+          <i class="fab fa-facebook"></i> Facebook
+        </button>
+      </div>
+
+      <div class="register-link">
+        Don't have an account? <a href="/user/register.html">Sign up now</a>
+      </div>
+    </div>
+
+    <!-- OTP Login Form -->
+    <div class="login-form-container" id="otp-login" style="display: none;">
+      <form id="otpLoginForm">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <div class="input-icon">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="otpPhone" placeholder="Enter 10-digit mobile number" maxlength="10" required>
+          </div>
+        </div>
+        
+        <div id="otpStep1">
+          <button type="button" class="login-btn" onclick="sendLoginOTP()">Send OTP →</button>
+        </div>
+        
+        <div id="otpStep2" style="display: none;">
+          <div class="form-group">
+            <label>Enter OTP</label>
+            <div class="otp-group">
+              <input type="text" id="otpCode" placeholder="6-digit OTP" maxlength="6" required>
+              <button type="button" class="btn btn-outline" onclick="resendLoginOTP()">Resend</button>
+            </div>
+          </div>
+          <div class="otp-timer" id="otpTimer"></div>
+          <button type="submit" class="login-btn">Verify & Login →</button>
+        </div>
+      </form>
+
+      <div class="demo-note">
+        <i class="fas fa-info-circle"></i> Demo Mode: Any phone number works.<br>
+        For testing, OTP will be shown in console/alert: <code>123456</code>
+      </div>
+
+      <div class="register-link">
+        Don't have an account? <a href="/user/register.html">Sign up now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">WeConnect</div>
+      <div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll('.login-tab');
+  const passwordForm = document.getElementById('password-login');
+  const otpForm = document.getElementById('otp-login');
+  let otpTimerInterval = null;
+  let otpExpiryTime = null;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      if (tab.dataset.tab === 'password') {
+        passwordForm.style.display = 'block';
+        otpForm.style.display = 'none';
+      } else {
+        passwordForm.style.display = 'none';
+        otpForm.style.display = 'block';
+      }
+    });
+  });
+
+  // Password Login
+  document.getElementById('passwordLoginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const identifier = document.getElementById('loginIdentifier').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!identifier || !password) {
+      WeConnect.showToast('Please fill all fields', 'error');
+      return;
+    }
+    
+    const result = WeConnectAuth.login(identifier, password);
+    
+    if (result.success) {
+      WeConnect.showToast(result.message, 'success');
+      setTimeout(() => {
+        const redirect = sessionStorage.getItem('weconnect_redirect_after_login') || '/user/dashboard.html';
+        sessionStorage.removeItem('weconnect_redirect_after_login');
+        window.location.href = redirect;
+      }, 1500);
+    } else {
+      WeConnect.showToast(result.message, 'error');
+    }
+  });
+
+  // OTP Functions
+  window.sendLoginOTP = function() {
+    const phone = document.getElementById('otpPhone').value.trim();
+    
+    if (!phone || phone.length !== 10) {
+      WeConnect.showToast('Please enter a valid 10-digit phone number', 'error');
+      return;
+    }
+    
+    const result = WeConnectAuth.sendOTP(phone);
+    
+    if (result.success) {
+      WeConnect.showToast(`OTP sent to ${phone}`, 'success');
+      document.getElementById('otpStep1').style.display = 'none';
+      document.getElementById('otpStep2').style.display = 'block';
+      
+      // Start timer (60 seconds)
+      otpExpiryTime = Date.now() + 60 * 1000;
+      startOTPTimer();
+    }
+  };
+
+  window.resendLoginOTP = function() {
+    const phone = document.getElementById('otpPhone').value.trim();
+    const result = WeConnectAuth.sendOTP(phone);
+    if (result.success) {
+      WeConnect.showToast('OTP resent', 'success');
+      otpExpiryTime = Date.now() + 60 * 1000;
+      startOTPTimer();
+    }
+  };
+
+  function startOTPTimer() {
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    
+    otpTimerInterval = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((otpExpiryTime - Date.now()) / 1000));
+      const timerEl = document.getElementById('otpTimer');
+      
+      if (remaining <= 0) {
+        clearInterval(otpTimerInterval);
+        timerEl.innerHTML = 'OTP expired. <a href="#" onclick="resendLoginOTP(); return false;">Resend</a>';
+      } else {
+        timerEl.innerHTML = `OTP valid for ${remaining} seconds`;
+      }
+    }, 1000);
+  }
+
+  document.getElementById('otpLoginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const phone = document.getElementById('otpPhone').value.trim();
+    const otp = document.getElementById('otpCode').value.trim();
+    
+    if (!otp || otp.length !== 6) {
+      WeConnect.showToast('Please enter 6-digit OTP', 'error');
+      return;
+    }
+    
+    const result = WeConnectAuth.verifyOTP(phone, otp);
+    
+    if (result.success) {
+      WeConnect.showToast(result.message, 'success');
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      setTimeout(() => {
+        const redirect = sessionStorage.getItem('weconnect_redirect_after_login') || '/user/dashboard.html';
+        sessionStorage.removeItem('weconnect_redirect_after_login');
+        window.location.href = redirect;
+      }, 1500);
+    } else {
+      WeConnect.showToast(result.message, 'error');
+    }
+  });
+
+  // Demo function for social login
+  window.showDemo = function(type) {
+    WeConnect.showToast('Demo mode: Use "9876543210" and password "123456"', 'info');
+  };
+
+  // Enter key handlers
+  document.getElementById('loginIdentifier').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('passwordLoginForm').dispatchEvent(new Event('submit'));
+  });
+  document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('passwordLoginForm').dispatchEvent(new Event('submit'));
+  });
+  document.getElementById('otpPhone').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendLoginOTP();
+  });
+  document.getElementById('otpCode').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('otpLoginForm').dispatchEvent(new Event('submit'));
+  });
+</script>
+</body>
+</html>

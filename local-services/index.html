@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Local Services | WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .services-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .services-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; background: var(--bg); }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 32px; background: var(--bg-secondary); padding: 6px; border-radius: var(--radius-xl); flex-wrap: wrap; overflow-x: auto; }
+    .tab-btn { padding: 12px 20px; border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--text-light); cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s; white-space: nowrap; }
+    .tab-btn.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow-sm); }
+    
+    .providers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .provider-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .provider-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .provider-image { height: 140px; background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); display: flex; align-items: center; justify-content: center; font-size: 56px; border-bottom: 1px solid var(--border); }
+    .provider-info { padding: 20px; }
+    .provider-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .provider-location { font-size: 13px; color: var(--text-light); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .provider-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .stars { color: #F59E0B; font-size: 12px; }
+    .provider-experience { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .provider-price { font-size: 14px; font-weight: 700; color: var(--blue); margin-top: 8px; }
+    .provider-footer { padding: 16px 20px; background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .book-btn { padding: 8px 24px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .book-btn:hover { background: #333; transform: translateY(-2px); }
+    .empty-state { text-align: center; padding: 60px; color: var(--text-muted); }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .tabs { justify-content: flex-start; }
+      .providers-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons">
+      <span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span>
+      <button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button>
+      <button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a>
+  <a href="/user/login.html" id="mobile-login">Login</a>
+  <a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a>
+</div>
+
+<div class="services-container">
+  <div class="services-wrapper">
+    <div class="page-header">
+      <h1>🔧 Local Services</h1>
+      <p>Electricians, plumbers, carpenters, cleaners & more - available near you in Lakhisarai</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">20+</div><div class="stat-label-sm">Service Providers</div></div>
+      <div class="stat-item"><div class="stat-number-lg">10+</div><div class="stat-label-sm">Years Experience</div></div>
+      <div class="stat-item"><div class="stat-number-lg">₹200+</div><div class="stat-label-sm">Starting Price</div></div>
+      <div class="stat-item"><div class="stat-number-lg">24/7</div><div class="stat-label-sm">Available</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search by name or service..."></div>
+        <select id="priceFilter" class="filter-select"><option value="all">All Prices</option><option value="budget">Budget (Under ₹300)</option><option value="mid">Mid (₹300-600)</option><option value="premium">Premium (₹600+)</option></select>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="electrician">⚡ Electrician</button>
+      <button class="tab-btn" data-tab="plumber">🔧 Plumber</button>
+      <button class="tab-btn" data-tab="carpenter">🪚 Carpenter</button>
+      <button class="tab-btn" data-tab="cleaner">🧹 Cleaner</button>
+    </div>
+    
+    <div id="providersGrid" class="providers-grid"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+<script>
+  // Local Services Data
+  const servicesData = {
+    electrician: [
+      { id: 1, name: "Ramesh Electrician", location: "Station Road, Lakhisarai", rating: 4.9, reviews: 234, experience: "12+ years", price: "₹400-800", image: "⚡" },
+      { id: 2, name: "Sunil Electricals", location: "Main Bazaar, Lakhisarai", rating: 4.6, reviews: 189, experience: "8+ years", price: "₹300-600", image: "⚡" },
+      { id: 3, name: "24/7 Emergency Electrician", location: "Anywhere in Lakhisarai", rating: 4.8, reviews: 312, experience: "10+ years", price: "₹500-1000", image: "⚡" }
+    ],
+    plumber: [
+      { id: 4, name: "Suresh Plumber", location: "Katoria Road, Lakhisarai", rating: 4.9, reviews: 345, experience: "15+ years", price: "₹300-700", image: "🔧" },
+      { id: 5, name: "Raj Plumbing Works", location: "Station Road, Lakhisarai", rating: 4.7, reviews: 234, experience: "10+ years", price: "₹350-650", image: "🔧" }
+    ],
+    carpenter: [
+      { id: 6, name: "Vijay Carpenter", location: "Main Bazaar, Lakhisarai", rating: 4.9, reviews: 234, experience: "20+ years", price: "₹400-1000", image: "🪚" },
+      { id: 7, name: "Furniture Works", location: "Katoria Road, Lakhisarai", rating: 4.5, reviews: 189, experience: "12+ years", price: "₹350-800", image: "🪚" }
+    ],
+    cleaner: [
+      { id: 8, name: "Lakhisarai Cleaners", location: "All areas", rating: 4.7, reviews: 234, experience: "8+ years", price: "₹200-500", image: "🧹" },
+      { id: 9, name: "Deep Cleaning Service", location: "Anywhere in Lakhisarai", rating: 4.6, reviews: 189, experience: "5+ years", price: "₹500-1500", image: "🧹" }
+    ]
+  };
+
+  let currentTab = 'electrician';
+  let searchTerm = '';
+  let priceFilter = 'all';
+
+  function getStars(rating) {
+    return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
+  }
+
+  function renderProviders() {
+    const container = document.getElementById('providersGrid');
+    let items = servicesData[currentTab] || [];
+    
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm));
+    
+    if (priceFilter === 'budget') items = items.filter(item => parseInt(item.price) < 300);
+    else if (priceFilter === 'mid') items = items.filter(item => parseInt(item.price) >= 300 && parseInt(item.price) < 600);
+    else if (priceFilter === 'premium') items = items.filter(item => parseInt(item.price) >= 600);
+    
+    if (items.length === 0) {
+      container.innerHTML = '<div class="empty-state"><i class="fas fa-search" style="font-size:48px;margin-bottom:16px;"></i><h3>No service providers found</h3></div>';
+      return;
+    }
+    
+    container.innerHTML = items.map(provider => `
+      <div class="provider-card">
+        <div class="provider-image">${provider.image}</div>
+        <div class="provider-info">
+          <div class="provider-name">${provider.name}</div>
+          <div class="provider-location"><i class="fas fa-map-marker-alt"></i> ${provider.location}</div>
+          <div class="provider-rating"><span class="stars">${getStars(provider.rating)}</span><span>(${provider.reviews} reviews)</span></div>
+          <div class="provider-experience">📅 Experience: ${provider.experience}</div>
+          <div class="provider-price">💰 ${provider.price}</div>
+        </div>
+        <div class="provider-footer">
+          <button class="book-btn" onclick="bookService('${currentTab}', ${provider.id}, '${provider.name}', '${provider.price}')">Book Now →</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function bookService(type, id, name, price) {
+    const user = getCurrentUser();
+    if (!user) {
+      showToast('Please login to book', 'warning');
+      setTimeout(() => window.location.href = '/user/login.html', 1000);
+      return;
+    }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: 'local-service', serviceType: type, id: id, name: name, price: price }));
+    window.location.href = `/local-services/booking.html?type=${type}&id=${id}&name=${encodeURIComponent(name)}&price=${price}`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      renderProviders();
+    });
+  });
+  
+  document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderProviders(); });
+  document.getElementById('priceFilter').addEventListener('change', (e) => { priceFilter = e.target.value; renderProviders(); });
+  
+  function updateUI() {
+    const user = getCurrentUser();
+    if (user) {
+      const loginBtn = document.getElementById('login-nav-btn');
+      const logoutBtn = document.getElementById('logout-nav-btn');
+      const userNameSpan = document.getElementById('user-name');
+      const myOrdersLink = document.getElementById('my-orders-link');
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+      if (userNameSpan) { userNameSpan.style.display = 'inline-block'; userNameSpan.textContent = user.name || user.phone; }
+      if (myOrdersLink) myOrdersLink.style.display = 'inline-block';
+      const mobileMyOrders = document.getElementById('mobile-my-orders');
+      if (mobileMyOrders) mobileMyOrders.style.display = 'block';
+      const mobileLogin = document.getElementById('mobile-login');
+      if (mobileLogin) mobileLogin.style.display = 'none';
+      const mobileLogout = document.getElementById('mobile-logout');
+      if (mobileLogout) mobileLogout.style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { 
+    sessionStorage.removeItem('weconnect_current_user'); 
+    window.location.href = '/index.html'; 
+  };
+  window.bookService = bookService;
+  
+  updateUI();
+  renderProviders();
+</script>
+</body>
+</html>

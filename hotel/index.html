@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Hotels & Banquets | WeConnect Lakhisarai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .hotel-container { min-height: 100vh; padding: 100px 20px 60px; background: var(--bg-secondary); }
+    .hotel-wrapper { max-width: 1200px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: var(--text-light); font-size: 14px; }
+    
+    .stats-bar { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border: 1px solid var(--border); }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number-lg { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
+    .stat-label-sm { font-size: 12px; color: var(--text-muted); }
+    
+    .search-section { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; border: 1px solid var(--border); }
+    .search-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .search-input-wrapper { flex: 2; position: relative; }
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input-wrapper input { width: 100%; padding: 14px 16px 14px 45px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; }
+    .filter-select { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 14px; cursor: pointer; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 32px; background: var(--bg-secondary); padding: 6px; border-radius: var(--radius-xl); width: fit-content; }
+    .tab-btn { padding: 12px 32px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: var(--text-light); cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s; }
+    .tab-btn.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow-sm); }
+    
+    .hotels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .hotel-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .hotel-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .hotel-image { height: 160px; background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); display: flex; align-items: center; justify-content: center; font-size: 48px; border-bottom: 1px solid var(--border); }
+    .hotel-info { padding: 20px; }
+    .hotel-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .hotel-location { font-size: 13px; color: var(--text-light); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .hotel-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .stars { color: #F59E0B; font-size: 12px; }
+    .hotel-price { font-size: 14px; font-weight: 700; color: var(--blue); margin-top: 8px; }
+    .hotel-footer { padding: 16px 20px; background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .book-btn { padding: 8px 20px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .book-btn:hover { background: #333; transform: translateY(-2px); }
+    
+    @media (max-width: 768px) {
+      .stats-bar { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 10px 20px; }
+      .hotels-grid { grid-template-columns: 1fr; }
+      .tabs { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo"><div class="logo-icon">🔗</div><div class="logo-text">We<span>Connect</span></div></a>
+    <ul class="nav-links"><li><a href="/index.html">Home</a></li><li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li></ul>
+    <div class="nav-buttons">
+      <span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span>
+      <button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button>
+      <button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a>
+  <a href="/user/login.html" id="mobile-login">Login</a>
+  <a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a>
+</div>
+
+<div class="hotel-container">
+  <div class="hotel-wrapper">
+    <div class="page-header">
+      <h1>🏨 Hotels & Banquets</h1>
+      <p>Book AC/Non-AC rooms, banquet halls, and party venues in Lakhisarai</p>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number-lg">15+</div><div class="stat-label-sm">Hotels</div></div>
+      <div class="stat-item"><div class="stat-number-lg">10+</div><div class="stat-label-sm">Banquet Halls</div></div>
+      <div class="stat-item"><div class="stat-number-lg">₹600+</div><div class="stat-label-sm">Starting Price</div></div>
+      <div class="stat-item"><div class="stat-number-lg">24/7</div><div class="stat-label-sm">Service</div></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-row">
+        <div class="search-input-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search hotels by name or location..."></div>
+        <select id="priceFilter" class="filter-select"><option value="all">All Prices</option><option value="budget">Budget (Under ₹800)</option><option value="mid">Mid (₹800-1500)</option><option value="luxury">Luxury (₹1500+)</option></select>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="hotels">🏨 Hotels</button>
+      <button class="tab-btn" data-tab="banquets">🎉 Banquet Halls</button>
+    </div>
+    
+    <div id="hotelsList" class="hotels-grid"></div>
+  </div>
+</div>
+
+<footer><div class="container"><div class="footer-content"><div class="footer-logo">WeConnect</div><div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div></div></div></footer>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+  const hotels = [
+    { id: 1, name: "Hotel Rajdhani", location: "Station Road, Lakhisarai", rating: 4.2, reviews: 345, priceRange: "₹600-2500", rooms: ["Standard Non-AC (₹600)", "Deluxe AC (₹1200)", "Suite (₹2500)"], image: "🏨", type: "hotel" },
+    { id: 2, name: "Hotel Maharaja", location: "Main Bazaar, Lakhisarai", rating: 4.7, reviews: 892, priceRange: "₹800-3000", rooms: ["Standard AC (₹800)", "Deluxe AC (₹1500)", "Premium Suite (₹3000)"], image: "🏨", type: "hotel" },
+    { id: 3, name: "Hotel City Palace", location: "Katoria Road, Lakhisarai", rating: 4.0, reviews: 234, priceRange: "₹500-2000", rooms: ["Standard Non-AC (₹500)", "Standard AC (₹1000)", "Family Suite (₹2000)"], image: "🏨", type: "hotel" },
+    { id: 4, name: "Lifeline Hotel", location: "Shastri Nagar, Lakhisarai", rating: 4.3, reviews: 178, priceRange: "₹700-2200", rooms: ["Standard AC (₹700)", "Deluxe AC (₹1300)", "Suite (₹2200)"], image: "🏨", type: "hotel" },
+    { id: 5, name: "Sanjeevani Residency", location: "Gandhi Chowk, Lakhisarai", rating: 4.5, reviews: 456, priceRange: "₹900-2800", rooms: ["Standard AC (₹900)", "Deluxe AC (₹1600)", "Executive Suite (₹2800)"], image: "🏨", type: "hotel" }
+  ];
+
+  const banquets = [
+    { id: 101, name: "Rajdhani Banquet Hall", location: "Station Road, Lakhisarai", rating: 4.3, reviews: 234, capacity: "200-300", priceRange: "₹15,000-50,000", image: "🎉", type: "banquet" },
+    { id: 102, name: "Maharaja Grand", location: "Main Bazaar, Lakhisarai", rating: 4.8, reviews: 567, capacity: "500-700", priceRange: "₹30,000-1,00,000", image: "🎉", type: "banquet" }
+  ];
+
+  let currentTab = 'hotels';
+  let currentFilter = 'all';
+
+  function getStars(rating) { return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : ''); }
+
+  function renderContent() {
+    const container = document.getElementById('hotelsList');
+    let items = currentTab === 'hotels' ? hotels : banquets;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm));
+    
+    if (currentFilter !== 'all') {
+      if (currentFilter === 'budget') items = items.filter(item => item.priceRange.includes('600') || item.priceRange.includes('500'));
+      else if (currentFilter === 'mid') items = items.filter(item => item.priceRange.includes('800') || item.priceRange.includes('900'));
+      else if (currentFilter === 'luxury') items = items.filter(item => item.priceRange.includes('1500') || item.priceRange.includes('2000') || item.priceRange.includes('2500'));
+    }
+    
+    if (items.length === 0) { container.innerHTML = '<div style="text-align:center;padding:60px;"><i class="fas fa-hotel" style="font-size:48px;margin-bottom:16px;opacity:0.5;"></i><h3>No results found</h3></div>'; return; }
+    
+    container.innerHTML = items.map(item => `
+      <div class="hotel-card" onclick="viewDetails('${item.type}', ${item.id})">
+        <div class="hotel-image">${item.image}</div>
+        <div class="hotel-info">
+          <div class="hotel-name">${item.name}</div>
+          <div class="hotel-location"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>
+          <div class="hotel-rating"><span class="stars">${getStars(item.rating)}</span><span>(${item.reviews} reviews)</span></div>
+          <div class="hotel-price">💰 ${item.priceRange}${item.capacity ? ` • 👥 ${item.capacity} guests` : ''}</div>
+        </div>
+        <div class="hotel-footer"><button class="book-btn" onclick="event.stopPropagation();bookNow('${item.type}', ${item.id})">Book Now →</button></div>
+      </div>
+    `).join('');
+  }
+
+  function viewDetails(type, id) { window.location.href = `/hotel/${type === 'hotel' ? 'hotel-details.html' : 'banquet-details.html'}?id=${id}`; }
+  
+  function bookNow(type, id) {
+    const user = WeConnectAuth.getCurrentUser();
+    if (!user) { WeConnect.showToast('Please login to book', 'warning'); setTimeout(() => window.location.href = '/user/login.html', 1000); return; }
+    sessionStorage.setItem('booking_temp', JSON.stringify({ type: type === 'hotel' ? 'hotel' : 'banquet', id: id }));
+    window.location.href = `/hotel/booking.html`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentTab = btn.dataset.tab; renderContent(); }); });
+  document.getElementById('searchInput').addEventListener('input', renderContent);
+  document.getElementById('priceFilter').addEventListener('change', (e) => { currentFilter = e.target.value; renderContent(); });
+  
+  function updateUI() {
+    const user = WeConnectAuth.getCurrentUser();
+    if (user) {
+      document.getElementById('login-nav-btn').style.display = 'none';
+      document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+      document.getElementById('user-name').style.display = 'inline-block';
+      document.getElementById('user-name').textContent = user.name || user.phone;
+      document.getElementById('my-orders-link').style.display = 'inline-block';
+      if (document.getElementById('mobile-my-orders')) document.getElementById('mobile-my-orders').style.display = 'block';
+      if (document.getElementById('mobile-login')) document.getElementById('mobile-login').style.display = 'none';
+      if (document.getElementById('mobile-logout')) document.getElementById('mobile-logout').style.display = 'block';
+    }
+  }
+  
+  window.logout = function() { sessionStorage.removeItem('weconnect_current_user'); window.location.href = '/index.html'; };
+  window.viewDetails = viewDetails;
+  window.bookNow = bookNow;
+  
+  updateUI();
+  renderContent();
+</script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Order Confirmed | WeConnect - Lakhisarai's Super App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .confirmation-container {
+      min-height: 100vh;
+      padding: 100px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg) 100%);
+    }
+    .confirmation-wrapper {
+      max-width: 550px;
+      margin: 0 auto;
+    }
+    .confirmation-card {
+      background: var(--bg);
+      border-radius: var(--radius-xl);
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(16,185,129,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .success-icon i {
+      font-size: 48px;
+      color: var(--confirmed);
+    }
+    .confirmation-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .confirmation-message {
+      color: var(--text-light);
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+    .order-id-box {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .order-id-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .order-id-value {
+      font-family: monospace;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text);
+    }
+    .status-box {
+      background: rgba(245,158,11,0.1);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 24px;
+      border-left: 3px solid var(--pending);
+      text-align: left;
+    }
+    .status-box i {
+      color: var(--pending);
+      margin-right: 8px;
+    }
+    .status-text {
+      font-weight: 500;
+      color: var(--pending);
+    }
+    .info-list {
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .info-label {
+      color: var(--text-muted);
+    }
+    .info-value {
+      font-weight: 500;
+      color: var(--text);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .btn-track {
+      padding: 12px 28px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-home {
+      padding: 12px 28px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-light);
+    }
+    .btn-home:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+    .share-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .share-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .share-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .share-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text-light);
+    }
+    .share-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    @media (max-width: 480px) {
+      .confirmation-card {
+        padding: 28px 20px;
+      }
+      .action-buttons {
+        flex-direction: column;
+      }
+      .btn-track, .btn-home {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/index.html" class="logo">
+      <div class="logo-icon">🔗</div>
+      <div class="logo-text">We<span>Connect</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/index.html#services">Services</a></li>
+      <li><a href="/user/my-orders.html" id="my-orders-link" style="display:none">My Orders</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <span id="user-name" style="display:none; margin-right: 16px; font-weight: 500;"></span>
+      <button class="btn btn-outline" id="login-nav-btn" onclick="window.location.href='/user/login.html'">Login</button>
+      <button class="btn btn-primary" id="logout-nav-btn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/index.html">Home</a>
+  <a href="/user/my-orders.html" id="mobile-my-orders" style="display:none">My Orders</a>
+  <a href="/user/login.html" id="mobile-login">Login</a>
+  <a href="#" id="mobile-logout" style="display:none" onclick="logout()">Logout</a>
+</div>
+
+<div class="confirmation-container">
+  <div class="confirmation-wrapper">
+    <div id="confirmationContent">
+      <div style="text-align: center; padding: 60px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--text-muted);"></i>
+        <p style="margin-top: 16px; color: var(--text-muted);">Loading order details...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">WeConnect</div>
+      <div class="footer-text">© 2025 WeConnect — Lakhisarai, Bihar</div>
+    </div>
+  </div>
+</footer>
+<script src="/js/app.js"></script>
+
+<script>
+  let currentOrder = null;
+
+  function checkAuthAndLoad() {
+    const sessionData = sessionStorage.getItem('weconnect_current_user');
+    if (!sessionData) {
+      sessionStorage.setItem('weconnect_redirect_after_login', window.location.pathname);
+      window.location.href = '/user/login.html';
+      return;
+    }
+    
+    try {
+      const user = JSON.parse(sessionData);
+      updateAuthUI(user);
+      loadOrder();
+    } catch(e) {
+      window.location.href = '/user/login.html';
+    }
+  }
+
+  function updateAuthUI(user) {
+    document.getElementById('login-nav-btn').style.display = 'none';
+    document.getElementById('logout-nav-btn').style.display = 'inline-flex';
+    document.getElementById('user-name').style.display = 'inline-block';
+    document.getElementById('user-name').textContent = user.name || user.phone || 'User';
+    document.getElementById('my-orders-link').style.display = 'inline-block';
+    document.getElementById('mobile-my-orders').style.display = 'block';
+    document.getElementById('mobile-login').style.display = 'none';
+    document.getElementById('mobile-logout').style.display = 'block';
+  }
+
+  function loadOrder() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id');
+    
+    if (!orderId) {
+      showNoOrder();
+      return;
+    }
+    
+    const bookingsData = localStorage.getItem('weconnect_bookings');
+    if (!bookingsData) {
+      showNoOrder();
+      return;
+    }
+    
+    try {
+      const allBookings = JSON.parse(bookingsData);
+      const sessionData = sessionStorage.getItem('weconnect_current_user');
+      const user = JSON.parse(sessionData);
+      currentOrder = allBookings.find(b => (b.id === orderId) && (b.userId === user.id || b.userPhone === user.phone));
+      
+      if (!currentOrder) {
+        showNoOrder();
+        return;
+      }
+      
+      renderConfirmation();
+    } catch(e) {
+      showNoOrder();
+    }
+  }
+
+  function getServiceIcon(serviceType) {
+    const icons = {
+      'Healthcare': '🏥',
+      'Cinema': '🎬',
+      'Hotel': '🏨',
+      'Transport': '🚗',
+      'Wedding': '💍',
+      'Local Services': '🔧',
+      'School': '📚',
+      'Delivery': '📦'
+    };
+    return icons[serviceType] || '📋';
+  }
+
+  function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function formatDateOnly(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  function renderConfirmation() {
+    const serviceIcon = getServiceIcon(currentOrder.serviceType);
+    
+    // Build order summary
+    let orderSummaryHtml = '';
+    if (currentOrder.formData) {
+      const importantFields = ['service', 'doctor', 'hospital', 'hotel', 'cinema', 'movie', 'date', 'time', 'address', 'pickup', 'drop'];
+      const relevantEntries = Object.entries(currentOrder.formData)
+        .filter(([key, value]) => importantFields.some(f => key.toLowerCase().includes(f.toLowerCase())) && value);
+      
+      if (relevantEntries.length > 0) {
+        orderSummaryHtml = `
+          <div class="info-list">
+            ${relevantEntries.slice(0, 4).map(([key, value]) => `
+              <div class="info-row">
+                <span class="info-label">${key.replace(/_/g, ' ').toUpperCase()}</span>
+                <span class="info-value">${value}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+    
+    const html = `
+      <div class="confirmation-card">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <h1 class="confirmation-title">Order Placed Successfully!</h1>
+        <p class="confirmation-message">
+          Your booking has been received and is now being processed.
+        </p>
+        
+        <div class="order-id-box">
+          <div class="order-id-label">Booking ID</div>
+          <div class="order-id-value">${currentOrder.id}</div>
+        </div>
+        
+        <div class="status-box">
+          <i class="fas fa-clock"></i>
+          <span class="status-text">⏳ Your order is placed. Waiting for merchant to confirm...</span>
+        </div>
+        
+        <div class="order-id-box" style="background: var(--bg-secondary);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span style="font-size: 24px;">${serviceIcon}</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 700;">${currentOrder.serviceName || currentOrder.serviceType}</div>
+              <div style="font-size: 12px; color: var(--text-muted);">${currentOrder.serviceType}</div>
+            </div>
+          </div>
+          <div class="info-row" style="padding-top: 8px;">
+            <span class="info-label">Order Date</span>
+            <span class="info-value">${formatDateTime(currentOrder.createdAt)}</span>
+          </div>
+          ${currentOrder.formData?.date ? `
+            <div class="info-row">
+              <span class="info-label">Service Date</span>
+              <span class="info-value">${currentOrder.formData.date}</span>
+            </div>
+          ` : ''}
+          ${currentOrder.formData?.time ? `
+            <div class="info-row">
+              <span class="info-label">Service Time</span>
+              <span class="info-value">${currentOrder.formData.time}</span>
+            </div>
+          ` : ''}
+        </div>
+        
+        ${orderSummaryHtml}
+        
+        <div class="action-buttons">
+          <a href="/user/order-details.html?id=${currentOrder.id}" class="btn-track">
+            <i class="fas fa-eye"></i> Track Order
+          </a>
+          <a href="/index.html" class="btn-home">
+            <i class="fas fa-home"></i> Back to Home
+          </a>
+        </div>
+        
+        <div class="share-section">
+          <div class="share-text">📱 Save your Booking ID to track order status</div>
+          <div class="share-buttons">
+            <button class="share-btn" onclick="copyOrderId()" title="Copy Booking ID">
+              <i class="fas fa-copy"></i>
+            </button>
+            <button class="share-btn" onclick="shareOrder()" title="Share Order">
+              <i class="fas fa-share-alt"></i>
+            </button>
+            <button class="share-btn" onclick="saveOrderNumber()" title="Save to Contacts">
+              <i class="fas fa-save"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('confirmationContent').innerHTML = html;
+  }
+
+  function showNoOrder() {
+    document.getElementById('confirmationContent').innerHTML = `
+      <div class="confirmation-card">
+        <div class="success-icon" style="background: rgba(239,68,68,0.15);">
+          <i class="fas fa-exclamation-triangle" style="color: var(--rejected);"></i>
+        </div>
+        <h1 class="confirmation-title">Order Not Found</h1>
+        <p class="confirmation-message">
+          We couldn't find your order. Please check your booking ID or try again.
+        </p>
+        <div class="action-buttons">
+          <a href="/index.html" class="btn-home">
+            <i class="fas fa-home"></i> Back to Home
+          </a>
+          <a href="/user/my-orders.html" class="btn-track">
+            <i class="fas fa-shopping-bag"></i> My Orders
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  function copyOrderId() {
+    if (currentOrder) {
+      navigator.clipboard.writeText(currentOrder.id);
+      WeConnect.showToast('Booking ID copied to clipboard!', 'success');
+    }
+  }
+
+  function shareOrder() {
+    if (currentOrder) {
+      const text = `I've placed an order on WeConnect!\n\nBooking ID: ${currentOrder.id}\nService: ${currentOrder.serviceName || currentOrder.serviceType}\nTrack your order at: ${window.location.origin}/user/order-details.html?id=${currentOrder.id}`;
+      if (navigator.share) {
+        navigator.share({
+          title: 'WeConnect Order',
+          text: text
+        });
+      } else {
+        copyOrderId();
+        WeConnect.showToast('Booking ID copied! Share it with others.', 'info');
+      }
+    }
+  }
+
+  function saveOrderNumber() {
+    if (currentOrder) {
+      const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:WeConnect Order ${currentOrder.id}
+NOTE:Service: ${currentOrder.serviceName || currentOrder.serviceType}\nOrder Date: ${formatDateTime(currentOrder.createdAt)}\nTrack at: ${window.location.origin}/user/order-details.html?id=${currentOrder.id}
+END:VCARD`;
+      const blob = new Blob([vCard], { type: 'text/vcard' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `weconnect_order_${currentOrder.id}.vcf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      WeConnect.showToast('Contact saved!', 'success');
+    }
+  }
+
+  window.copyOrderId = copyOrderId;
+  window.shareOrder = shareOrder;
+  window.saveOrderNumber = saveOrderNumber;
+  window.logout = function() {
+    sessionStorage.removeItem('weconnect_current_user');
+    window.location.href = '/index.html';
+  };
+
+  // Initialize
+  checkAuthAndLoad();
+</script>
+</body>
+</html>
