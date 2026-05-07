@@ -1,10 +1,9 @@
-const API_BASE = window.location.origin; // Railway will provide the correct URL
-// Then use fetch(API_BASE + '/api/save-booking', ...)
-
 // ========================================
 // WECONNECT - COMPLETE APP.JS
 // ========================================
-const BACKEND_URL = 'http://localhost:3001'; // CHANGE when you deploy
+const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? `http://localhost:3001`
+  : window.location.origin;
 
 // ============ TOAST NOTIFICATIONS ============
 function showToast(message, type) {
