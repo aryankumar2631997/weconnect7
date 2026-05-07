@@ -323,11 +323,23 @@
   let currentFilter = 'all';
 
   function loadData() {
-    const data = localStorage.getItem('weconnect_bookings');
-    allOrders = data ? JSON.parse(data) : [];
-    allOrders.reverse();
-    updateStats();
-    renderTable();
+    fetch('/api/get-all-bookings')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch bookings');
+        return res.json();
+      })
+      .then(data => {
+        allOrders = Array.isArray(data) ? data : [];
+        allOrders.reverse();
+        updateStats();
+        renderTable();
+      })
+      .catch(err => {
+        console.error('Error loading bookings:', err);
+        allOrders = [];
+        updateStats();
+        renderTable();
+      });
   }
 
   function updateStats() {
@@ -365,13 +377,26 @@
   }
 
   function updateStatus(orderId, newStatus) {
-    const bookings = JSON.parse(localStorage.getItem('weconnect_bookings') || '[]');
-    const index = bookings.findIndex(b => b.id === orderId);
-    if (index !== -1) {
-      bookings[index].status = newStatus;
-      localStorage.setItem('weconnect_bookings', JSON.stringify(bookings));
-      loadData();
-    }
+    fetch('/api/update-booking-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: orderId, status: newStatus })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to update status');
+        return res.json();
+      })
+      .then(() => loadData())
+      .catch(err => {
+        console.error('Error updating status:', err);
+        // Optimistically update the local state so the UI reflects the change
+        const order = allOrders.find(o => o.id === orderId);
+        if (order) {
+          order.status = newStatus;
+          updateStats();
+          renderTable();
+        }
+      });
   }
 
   function sendWhatsApp(orderId) {
