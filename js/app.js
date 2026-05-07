@@ -70,7 +70,33 @@ window.WeConnectAuth = {
   getUsers: getUsers,
   saveUsers: saveUsers
 };
-
+// Auto‑sync any booking saved to localStorage to the live backend
+(function autoSync() {
+  const originalSetItem = localStorage.setItem;
+  localStorage.setItem = function(key, value) {
+    originalSetItem.apply(this, arguments);
+    if (key === 'weconnect_bookings') {
+      try {
+        const all = JSON.parse(value);
+        if (all.length === 0) return;
+        const latest = all[all.length - 1];
+        fetch('/api/save-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category: 'doctor', // or map from latest.serviceType
+            customerName: latest.userName,
+            customerPhone: latest.userPhone,
+            formData: latest.formData
+          })
+        })
+        .then(res => res.json())
+        .then(data => console.log('✅ Synced to Google Sheets:', data))
+        .catch(err => console.error('Sync error:', err));
+      } catch(e) {}
+    }
+  };
+})();
 // ============ HELPER FUNCTIONS ============
 function formatDate(dateString) {
   const date = new Date(dateString);
